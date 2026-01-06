@@ -14,8 +14,11 @@ DEAD2 = 8
 INERT = 9
         
 class CA():
-    def __init__(self, n: int):
+    def __init__(self, n: int, prob_spore_to_hyphae: float, prob_mushroom: float, prob_spread: float):
         self.n: int = n
+        self.probSporeToHypae: float = prob_spore_to_hyphae
+        self.probMushroom: float = prob_mushroom
+        self.probSpread: float = prob_spread
         self.grids: list[np.array] = [np.zeros((n, n), dtype=np.uint32)]
         self.time = 0
         
@@ -49,11 +52,15 @@ class CA():
         
     def transition(self, state):
         if state ==  SPORE:
-            return YOUNG
+            if np.random.random() < self.prob_spore_to_hypae:
+                return YOUNG
+            return SPORE
         elif state ==   YOUNG:
             return MATURING
         elif state ==  MATURING:
-            return MUSHROOMS
+            if np.random.random() < self.prob_mushroom:
+                return MUSHROOMS
+            return OLDER
         elif state ==  OLDER:
             return DECAYING
         elif state ==  MUSHROOMS:
@@ -65,7 +72,9 @@ class CA():
         elif state ==  DEAD2:
             return EMPTY
         elif state ==  EMPTY:
-            return YOUNG
+            if np.random.random() < self.prob_spread:
+                return YOUNG
+            return EMPTY
         elif state ==  INERT:
             return INERT
         else:
