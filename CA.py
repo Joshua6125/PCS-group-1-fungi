@@ -19,7 +19,7 @@ class CA():
         self.prob_spore_to_hyphae: float = prob_spore_to_hyphae
         self.prob_mushroom: float = prob_mushroom
         self.prob_spread: float = prob_spread
-        self.grids: list[np.array] = [np.zeros((n, n), dtype=np.uint32)]
+        self.grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.uint32)]
         self.time = 0
 
     def __repr__(self):
