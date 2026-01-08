@@ -14,15 +14,15 @@ DEAD2 = 8
 INERT = 9
 
 # Parameters
-n = 5
+n = 20
 prob_spore_to_hyphae = 0.2
 prob_mushroom = 0.5
 prob_spread = 0.5
 
 # Main code
 simulation = CA(n, prob_spore_to_hyphae, prob_mushroom, prob_spread)
-simulation.set_state(0, 1, INERT)
 print(simulation)
 for _ in range(10):
     simulation.step()
-    print(simulation)
+    sim_string = str(simulation)
+    print(sim_string)
