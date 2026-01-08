@@ -2,8 +2,6 @@ from CA import CA
 from constants import *
 import numpy as np
 
-VON_NEUMANN_NBD = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
 class BasicSim(CA):
     def __init__(self, n: int, prob_spore_to_hyphae: float, prob_mushroom: float, prob_spread: float):
         super().__init__(n)

@@ -16,7 +16,7 @@ INERT = 9
 
 # Parameters
 n = 75
-prob_spore_to_hyphae = 0.9
+prob_spore_to_hyphae = 1
 prob_mushroom = 0.9
 prob_spread = 0.7
 

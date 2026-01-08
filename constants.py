@@ -8,3 +8,5 @@ DECAYING = 6
 DEAD1 = 7
 DEAD2 = 8
 INERT = 9
+
+VON_NEUMANN_NBD = [(1, 0), (-1, 0), (0, 1), (0, -1)]
