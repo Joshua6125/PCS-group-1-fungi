@@ -2,10 +2,7 @@ from itertools import product
 from constants import *
 import numpy as np
 
-# State Names
 
-
-# prob_spore_to_hyphae: float, prob_mushroom: float, prob_spread: float
 class CA:
     def __init__(self, n: int):
         self.n: int = n
