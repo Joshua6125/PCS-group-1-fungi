@@ -23,10 +23,23 @@ class CA():
         self.time = 0
 
     def __repr__(self):
+        state_emojis = {
+            EMPTY: "⬛",
+            SPORE: "✨",
+            YOUNG: "👶",
+            MATURING: "👦",
+            MUSHROOMS: "🍄",
+            OLDER: "🧑",
+            DECAYING: "👴",
+            DEAD1: "💀",
+            DEAD2: "💀️",
+            INERT: "🟥"
+        }
+
         message = ""
         for y in range(self.n):
             for x in range(self.n):
-                message += str(self.grids[-1][y][x]) + " "
+                message += state_emojis[self.grids[-1][y][x]] + " "
             message += "\n"
         return message
 
