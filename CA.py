@@ -26,7 +26,7 @@ class CA:
         message = ""
         for y in range(self.n):
             for x in range(self.n):
-                message += state_emojis[self.grids[-1][y][x]] + " "
+                message += state_emojis[self.grids[-1][y][x]]
             message += "\n"
         return message
 
