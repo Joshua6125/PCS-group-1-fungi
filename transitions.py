@@ -9,8 +9,8 @@ class BasicSim(CA):
         self.prob_mushroom = prob_mushroom
         self.prob_spread = prob_spread
 
-    def transition(self, grid: list[np.ndarray], x: int, y: int) -> int:
-        state = grid[y][x]
+    def transition(self, state_grid: list[np.ndarray], toxicity_grid: list[np.ndarray], x: int, y: int) -> int:
+        state = state_grid[y][x]
 
         if state == SPORE:
             if np.random.random() < self.prob_spore_to_hyphae:
@@ -44,7 +44,7 @@ class BasicSim(CA):
             for (dx, dy) in MOORE_NBD:
                 if not (0 <= y + dy < self.n and 0 <= x + dx < self.n):
                     continue
-                if not grid[y + dy][x + dx] == YOUNG:
+                if not state_grid[y + dy][x + dx] == YOUNG:
                     continue
                 if np.random.random() < self.prob_spread/np.linalg.norm((dx, dy)):
                     return YOUNG
