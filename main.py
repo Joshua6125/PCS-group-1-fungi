@@ -1,17 +1,23 @@
 from constants import *
 from transitions import BasicSim
 import time
+import numpy as np
 
 
 def main():
     # Parameters
     n = 75
-    prob_spore_to_hyphae = 0.7
+    prob_spore_to_hyphae = 0.3
     prob_mushroom = 0.7
     prob_spread = 0.5
 
+    prob_spore = 0.05
+
     simulation = BasicSim(n, prob_spore_to_hyphae, prob_mushroom, prob_spread)
-    simulation.set_state(n//2, n//2, SPORE)
+    for i in range(n):
+        for j in range(n):
+            if np.random.random() <= prob_spore:
+                simulation.set_state(i, j, SPORE)
 
     print(simulation)
     for _ in range(100):
