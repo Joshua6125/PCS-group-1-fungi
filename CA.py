@@ -1,5 +1,8 @@
 from itertools import product
-from constants import *
+from constants import (
+    EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
+    INERT
+)
 import numpy as np
 
 
