@@ -8,11 +8,11 @@ from constants import (
 import numpy as np
 
 class BasicSim(CA):
-    def __init__(self, n: int, prob_spore_to_hyphae: float, prob_mushroom: float, prob_spread: float):
-        super().__init__(n)
-        self.prob_spore_to_hyphae = prob_spore_to_hyphae
-        self.prob_mushroom = prob_mushroom
-        self.prob_spread = prob_spread
+    def __init__(self, parameters):
+        super().__init__(parameters["n"])
+        self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
+        self.prob_mushroom: float = parameters["prob_mushroom"]
+        self.prob_spread: float = parameters["prob_spread"]
 
     def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x: int, y: int) -> int:
         state = state_grid[y][x]
