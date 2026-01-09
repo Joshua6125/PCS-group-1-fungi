@@ -27,11 +27,6 @@ class CA:
             INERT: "🟥"
         }
 
-        # message = ""
-        # for y in range(self.n):
-        #     for x in range(self.n):
-        #         message += state_emojis[self.state_grids[-1][y][x]]
-        #     message += "\n"
         message = ""
         for y in range(self.n):
             for x in range(self.n):
@@ -41,13 +36,11 @@ class CA:
 
     def step(self):
         state_grid = np.zeros((self.n, self.n), dtype=np.uint32)
-        toxicity_grid = np.zeros((self.n, self.n), dtype=np.uint32)
-
         for (x, y) in product(range(self.n), repeat=2):
-            state_grid[y][x] = self.state_transition(self.state_grids[-1], self.toxicity_grids[-1], x, y)
-            toxicity_grid[y][x] = self.toxin_transition(self.state_grids[-1], self.toxicity_grids[-1], x, y);
-
+            state_grid[y, x] = self.state_transition(self.state_grids[-1], self.toxicity_grids[-1], x, y)
         self.state_grids.append(state_grid)
+
+        toxicity_grid =  self.toxin_transition(self.state_grids[-1], self.toxicity_grids[-1]);
         self.toxicity_grids.append(toxicity_grid)
 
     def set_state(self, x: int, y: int, state: int, time: int=0):
@@ -78,8 +71,8 @@ class CA:
         """
         self.toxicity_grids[time][y][x] = toxicity
 
-    def state_transition(self, state_grid, toxicity_grid, x, y) -> int:
+    def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x, y) -> int:
         raise NotImplementedError
 
-    def toxin_transition(self, state_grid, toxicity_grid, x, y) -> float:
+    def toxin_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray) -> np.ndarray:
         raise NotImplementedError
