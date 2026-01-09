@@ -1,20 +1,11 @@
-from constants import *
+from constants import SPORE
 from transitions import BasicSim, BasicToxinSim
+from utils import gkern
 import time
-import numpy as np
 
-def gkern(l, sig, multi):
-    """\
-    creates gaussian kernel with side length `l` and a sigma of `sig`
-    """
-    ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
-    gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
-    kernel = np.outer(gauss, gauss)
-    return kernel / np.sum(kernel) * multi
 
 def main():
     # Parameters
-
     sim_parameters = {
         "n": 75,
         "prob_spore_to_hyphae": 1.0,
