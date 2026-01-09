@@ -17,3 +17,5 @@ MOORE_NBD = [
     (0, 1),           (0, -1),
     (-1, 1), (-1, 0), (-1, -1)
 ]
+
+TOXIN_RELEASING_STATES = [MATURING, OLDER, DECAYING]

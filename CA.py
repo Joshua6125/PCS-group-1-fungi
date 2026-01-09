@@ -9,7 +9,8 @@ import numpy as np
 class CA:
     def __init__(self, n: int):
         self.n: int = n
-        self.grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.uint32)]
+        self.state_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.uint32)]
+        self.toxicity_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.float32)]
         self.time = 0
 
     def __repr__(self):
@@ -29,15 +30,24 @@ class CA:
         message = ""
         for y in range(self.n):
             for x in range(self.n):
-                message += state_emojis[self.grids[-1][y][x]]
+                # Uncomment for hacky visualization of toxicity.
+                # threshold = 0.3
+                # if self.toxicity_grids[-1][y, x] > threshold and self.state_grids[-1][y, x] == EMPTY:
+                #     message += "🟪"
+                # else:
+                #     message += state_emojis[self.state_grids[-1][y][x]]
+                message += state_emojis[self.state_grids[-1][y, x]]
             message += "\n"
         return message
 
     def step(self):
-        grid = np.zeros((self.n, self.n), dtype=np.uint32)
+        state_grid = np.zeros((self.n, self.n), dtype=np.uint32)
         for (x, y) in product(range(self.n), repeat=2):
-            grid[y][x] = self.transition(self.grids[-1], x, y)
-        self.grids.append(grid)
+            state_grid[y, x] = self.state_transition(self.state_grids[-1], self.toxicity_grids[-1], x, y)
+        self.state_grids.append(state_grid)
+
+        toxicity_grid =  self.toxin_transition(self.state_grids[-1], self.toxicity_grids[-1]);
+        self.toxicity_grids.append(toxicity_grid)
 
     def set_state(self, x: int, y: int, state: int, time: int=0):
         """
@@ -51,7 +61,24 @@ class CA:
         :param state: Description
         :type state: int
         """
-        self.grids[time][y][x] = state
+        self.state_grids[time][y, x] = state
 
-    def transition(self, grid, x, y):
+    def set_toxicity(self, x: int, y: int, toxicity: float, time: int=0):
+        """
+        Set the state of a single cell value
+
+        :param self: Description
+        :param x: 0 indexed coordinate
+        :type x: int
+        :param y: 0 indexed coordinate
+        :type y: int
+        :param state: Description
+        :type state: int
+        """
+        self.toxicity_grids[time][y, x] = toxicity
+
+    def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x, y) -> int:
+        raise NotImplementedError
+
+    def toxin_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray) -> np.ndarray:
         raise NotImplementedError
