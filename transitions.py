@@ -15,7 +15,7 @@ class BasicSim(CA):
         self.prob_spread: float = parameters["prob_spread"]
 
     def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x: int, y: int) -> int:
-        state = state_grid[y][x]
+        state = state_grid[y, x]
 
         if state == SPORE:
             if np.random.random() < self.prob_spore_to_hyphae:
@@ -49,7 +49,7 @@ class BasicSim(CA):
             for (dx, dy) in MOORE_NBD:
                 if not (0 <= y + dy < self.n and 0 <= x + dx < self.n):
                     continue
-                if not state_grid[y + dy][x + dx] == YOUNG:
+                if not state_grid[y + dy, x + dx] == YOUNG:
                     continue
                 if np.random.random() < self.prob_spread/np.linalg.norm((dx, dy)):
                     return YOUNG
@@ -75,7 +75,7 @@ class BasicToxinSim(CA):
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
     def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x: int, y: int) -> int:
-        state = state_grid[y][x]
+        state = state_grid[y, x]
 
         if state == SPORE:
             if np.random.random() < self.prob_spore_to_hyphae:

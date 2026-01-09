@@ -36,7 +36,7 @@ class CA:
                 #     message += "🟪"
                 # else:
                 #     message += state_emojis[self.state_grids[-1][y][x]]
-                message += state_emojis[self.state_grids[-1][y][x]]
+                message += state_emojis[self.state_grids[-1][y, x]]
             message += "\n"
         return message
 
@@ -61,7 +61,7 @@ class CA:
         :param state: Description
         :type state: int
         """
-        self.state_grids[time][y][x] = state
+        self.state_grids[time][y, x] = state
 
     def set_toxicity(self, x: int, y: int, toxicity: float, time: int=0):
         """
@@ -75,7 +75,7 @@ class CA:
         :param state: Description
         :type state: int
         """
-        self.toxicity_grids[time][y][x] = toxicity
+        self.toxicity_grids[time][y, x] = toxicity
 
     def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x, y) -> int:
         raise NotImplementedError
