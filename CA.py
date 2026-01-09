@@ -31,12 +31,12 @@ class CA:
         for y in range(self.n):
             for x in range(self.n):
                 # Uncomment for hacky visualization of toxicity.
-                threshold = 0.3
-                if self.toxicity_grids[-1][y, x] > threshold and self.state_grids[-1][y, x] == EMPTY:
-                    message += "🟪"
-                else:
-                    message += state_emojis[self.state_grids[-1][y][x]]
-                # message += state_emojis[self.state_grids[-1][y][x]]
+                # threshold = 0.3
+                # if self.toxicity_grids[-1][y, x] > threshold and self.state_grids[-1][y, x] == EMPTY:
+                #     message += "🟪"
+                # else:
+                #     message += state_emojis[self.state_grids[-1][y][x]]
+                message += state_emojis[self.state_grids[-1][y][x]]
             message += "\n"
         return message
 
