@@ -3,6 +3,7 @@ from transitions import BasicSim
 from utils import gkern
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import os
 
 # State names
 EMPTY = 0
@@ -45,4 +46,6 @@ for probability in probabilities:
     ax.imshow(simulation.state_grids[-1], origin='lower', cmap=cmap)
 
     plt.title(f"Fairy rings ater {num_iterations} steps with spread probability {round(probability, 1)}")
+    if not os.path.exists('./plots/experiment_prob_spread/'):
+        os.makedirs('./plots/experiment_prob_spread')
     plt.savefig(f"./plots/experiment_prob_spread/{num_iterations}_{round(probability, 1)}.png")
