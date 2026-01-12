@@ -19,7 +19,8 @@ class BasicSim(CA):
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
 
-    def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x: int, y: int) -> int:
+    def state_transition(self, x: int, y: int) -> int:
+        state_grid = self.state_grids[-1]
         state = state_grid[y, x]
 
         if state == SPORE:
@@ -65,7 +66,7 @@ class BasicSim(CA):
 
         raise ValueError
 
-    def toxin_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray) -> np.ndarray:
+    def toxin_transition(self) -> np.ndarray:
         return np.zeros((self.n, self.n), dtype=np.uint32)
 
 
@@ -87,7 +88,10 @@ class BasicToxinSim(CA):
         self.toxin_decay : float = parameters["toxin_decay"]
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
-    def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x: int, y: int) -> int:
+    def state_transition(self, x: int, y: int) -> int:
+        state_grid = self.state_grids[-1]
+        toxicity_grid = self.toxicity_grids[-1]
+
         state = state_grid[y, x]
 
         if state == SPORE:
@@ -135,7 +139,9 @@ class BasicToxinSim(CA):
 
         raise ValueError
 
-    def toxin_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray) -> np.ndarray:
+    def toxin_transition(self) -> np.ndarray:
+        state_grid = self.state_grids[-1]
+        toxicity_grid = self.toxicity_grids[-1]
         for x, y in product(range(self.n), range(self.n)):
             if state_grid[y, x] in TOXIN_RELEASING_STATES:
                 toxicity_grid[y, x] = 1
