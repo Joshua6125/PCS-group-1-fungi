@@ -48,6 +48,11 @@ class CA:
 
         toxicity_grid =  self.toxin_transition();
         self.toxicity_grids.append(toxicity_grid)
+    
+    def reset(self):
+        self.state_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.uint32)]
+        self.toxicity_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.float32)]
+        self.time = 0
 
     def set_state(self, x: int, y: int, state: int, time: int=0):
         """

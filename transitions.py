@@ -13,6 +13,11 @@ class BasicSim(CA):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
+    
+    def change_parameters(self, parameters):
+        self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
+        self.prob_mushroom: float = parameters["prob_mushroom"]
+        self.prob_spread: float = parameters["prob_spread"]
 
     def state_transition(self, x: int, y: int) -> int:
         state_grid = self.state_grids[-1]
@@ -75,9 +80,18 @@ class BasicToxinSim(CA):
         self.toxin_decay : float = parameters["toxin_decay"]
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
+    def change_parameters(self, parameters):
+        self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
+        self.prob_mushroom: float = parameters["prob_mushroom"]
+        self.prob_spread: float = parameters["prob_spread"]
+        self.toxin_threshold: float = parameters["toxin_threshold"]
+        self.toxin_decay : float = parameters["toxin_decay"]
+        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+
     def state_transition(self, x: int, y: int) -> int:
         state_grid = self.state_grids[-1]
         toxicity_grid = self.toxicity_grids[-1]
+
         state = state_grid[y, x]
 
         if state == SPORE:
