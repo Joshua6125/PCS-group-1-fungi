@@ -55,7 +55,7 @@ def main():
     plt.xlabel("Decay Rate")
     plt.ylabel("Size Convex Hull divided by Total")
     plt.legend()
-    plt.savefig("results_boxes_test.png")
+    plt.savefig("./plots/results_boxes_test.png")
     plt.show()
 
 if __name__ == "__main__":
