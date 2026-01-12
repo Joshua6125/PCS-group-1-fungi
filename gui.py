@@ -1,14 +1,16 @@
 import tkinter
 import numpy as np
 
+from constants import *
+
 from transitions import BasicToxinSim
 from utils import gkern
 
 # Implement the default Matplotlib key bindings.
-from matplotlib.backend_bases import key_press_handler
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
-from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 sim_parameters = {
     "n": 75,
@@ -20,17 +22,17 @@ sim_parameters = {
     "toxin_convolution": gkern(5, 1, 1)
 }
 
+colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 0.5), (0, 0, 1), (1, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
+
 sim = BasicToxinSim(sim_parameters)
+sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 root = tkinter.Tk()
 root.wm_title("Embedded in Tk")
 
-fig = Figure(figsize=(5, 4), dpi=100)
-t = np.arange(0, 3, .01)
-ax = fig.add_subplot()
-line, = ax.plot(t, 2 * np.sin(2 * np.pi * t))
-ax.set_xlabel("time [s]")
-ax.set_ylabel("f(t)")
+cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=10)
+fig, ax = plt.subplots()
+ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
 
 canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
 canvas.draw()
@@ -38,10 +40,6 @@ canvas.draw()
 # pack_toolbar=False will make it easier to use a layout manager later on.
 toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
 toolbar.update()
-
-canvas.mpl_connect(
-    "key_press_event", lambda event: print(f"you pressed {event.key}"))
-canvas.mpl_connect("key_press_event", key_press_handler)
 
 button_quit = tkinter.Button(master=root, text="Quit", command=root.destroy)
 
@@ -54,7 +52,7 @@ def run_iterations():
     n = int(iter_amount_spinbox.get())
     for _ in range(n):
         sim.step()
-        print(sim)
+        ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
         canvas.draw()
 run_for_button = tkinter.Button(sim_control_frame, text="Run for n iterations", command=run_iterations)
 run_for_button.grid(in_=sim_control_frame, row=0, column=1)
