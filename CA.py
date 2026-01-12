@@ -9,8 +9,10 @@ import numpy as np
 class CA:
     def __init__(self, n: int):
         self.n: int = n
-        self.state_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.uint32)]
-        self.toxicity_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.float32)]
+        self.state_grids: list[np.ndarray] = [
+            np.zeros((n, n), dtype=np.uint32)]
+        self.toxicity_grids: list[np.ndarray] = [
+            np.zeros((n, n), dtype=np.float32)]
         self.time = 0
 
     def __repr__(self):
@@ -46,15 +48,17 @@ class CA:
             state_grid[y, x] = self.state_transition(x, y)
         self.state_grids.append(state_grid)
 
-        toxicity_grid =  self.toxin_transition();
+        toxicity_grid = self.toxin_transition()
         self.toxicity_grids.append(toxicity_grid)
-    
+
     def reset(self):
-        self.state_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.uint32)]
-        self.toxicity_grids: list[np.ndarray] = [np.zeros((n, n), dtype=np.float32)]
+        self.state_grids: list[np.ndarray] = [
+            np.zeros((n, n), dtype=np.uint32)]
+        self.toxicity_grids: list[np.ndarray] = [
+            np.zeros((n, n), dtype=np.float32)]
         self.time = 0
 
-    def set_state(self, x: int, y: int, state: int, time: int=0):
+    def set_state(self, x: int, y: int, state: int, time: int = 0):
         """
         Set the state of a single cell value
 
@@ -68,7 +72,7 @@ class CA:
         """
         self.state_grids[time][y, x] = state
 
-    def set_toxicity(self, x: int, y: int, toxicity: float, time: int=0):
+    def set_toxicity(self, x: int, y: int, toxicity: float, time: int = 0):
         """
         Set the state of a single cell value
 
