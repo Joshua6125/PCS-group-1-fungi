@@ -1,12 +1,26 @@
 import tkinter
-
 import numpy as np
+
+from transitions import BasicToxinSim
+from utils import gkern
 
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
 from matplotlib.figure import Figure
+
+sim_parameters = {
+    "n": 75,
+    "prob_spore_to_hyphae": 1.0,
+    "prob_mushroom": 0.7,
+    "prob_spread": 0.5,
+    "toxin_threshold": 0.3,
+    "toxin_decay": 0.05,
+    "toxin_convolution": gkern(5, 1, 1)
+}
+
+sim = BasicToxinSim(sim_parameters)
 
 root = tkinter.Tk()
 root.wm_title("Embedded in Tk")
@@ -37,7 +51,11 @@ sim_control_frame.columnconfigure(1, weight=1)
 iter_amount_spinbox = tkinter.Spinbox(sim_control_frame, from_=0, to=100,)
 iter_amount_spinbox.grid(in_=sim_control_frame, row=0, column=0)
 def run_iterations():
-    return
+    n = int(iter_amount_spinbox.get())
+    for _ in range(n):
+        sim.step()
+        print(sim)
+        canvas.draw()
 run_for_button = tkinter.Button(sim_control_frame, text="Run for n iterations", command=run_iterations)
 run_for_button.grid(in_=sim_control_frame, row=0, column=1)
 
@@ -46,22 +64,26 @@ slider_frame.columnconfigure(0, weight=1)
 slider_frame.columnconfigure(1, weight=1)
 
 def update_prob_spore_to_hyphae(new_val):
-    canvas.draw()
+    sim_parameters["prob_spore_to_hyphae"] = new_val
+    sim.parameters = sim_parameters
 slider_prob_spore_to_hyphae = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
                               command=update_prob_spore_to_hyphae, label="Probability spore to hyphae")
 
 def update_prob_spread(new_val):
-    canvas.draw()
+    sim_parameters["prob_spread"] = new_val
+    sim.parameters = sim_parameters
 slider_prob_spread = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
                               command=update_prob_spread, label="Probability of spreading")
 
 def update_toxin_treshold(new_val):
-    canvas.draw()
+    sim_parameters["toxin_treshold"] = new_val
+    sim.parameters = sim_parameters
 slider_toxin_treshold = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
                               command=update_toxin_treshold, label="Toxin treshold")
 
 def update_toxin_decay(new_val):
-    canvas.draw()
+    sim_parameters["toxin_decay"] = new_val
+    sim.parameters = sim_parameters
 slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
                               command=update_toxin_decay, label="Toxin decay")
 
