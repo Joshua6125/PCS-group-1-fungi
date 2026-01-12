@@ -13,6 +13,11 @@ class BasicSim(CA):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
+    
+    def change_parameters(self, parameters):
+        self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
+        self.prob_mushroom: float = parameters["prob_mushroom"]
+        self.prob_spread: float = parameters["prob_spread"]
 
     def state_transition(self, state_grid: np.ndarray, toxicity_grid: np.ndarray, x: int, y: int) -> int:
         state = state_grid[y, x]
@@ -67,6 +72,14 @@ class BasicSim(CA):
 class BasicToxinSim(CA):
     def __init__(self, parameters):
         super().__init__(parameters["n"])
+        self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
+        self.prob_mushroom: float = parameters["prob_mushroom"]
+        self.prob_spread: float = parameters["prob_spread"]
+        self.toxin_threshold: float = parameters["toxin_threshold"]
+        self.toxin_decay : float = parameters["toxin_decay"]
+        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+
+    def change_parameters(self, parameters):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
