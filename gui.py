@@ -28,16 +28,15 @@ sim = BasicToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 root = tkinter.Tk()
-root.wm_title("Embedded in Tk")
+root.wm_title("FFR simulation")
 
 cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=10)
 fig, ax = plt.subplots()
 ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
 
-canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+canvas = FigureCanvasTkAgg(fig, master=root) 
 canvas.draw()
 
-# pack_toolbar=False will make it easier to use a layout manager later on.
 toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
 toolbar.update()
 
