@@ -21,7 +21,7 @@ class BasicSim(CA):
 
     def state_transition(self, x: int, y: int) -> int:
         state_grid = self.state_grids[-1]
-        state = state_grid[y, x]
+        state = state_grid.get((y, x), EMPTY)
 
         if state == SPORE:
             if np.random.random() < self.prob_spore_to_hyphae:
@@ -53,9 +53,8 @@ class BasicSim(CA):
 
         if state == EMPTY:
             for (dx, dy) in MOORE_NBD:
-                if not (0 <= y + dy < self.n and 0 <= x + dx < self.n):
-                    continue
-                if not state_grid[y + dy, x + dx] == YOUNG:
+                # No boundary check needed for infinite grid
+                if not state_grid.get((y + dy, x + dx), EMPTY) == YOUNG:
                     continue
                 if np.random.random() < self.prob_spread/np.linalg.norm((dx, dy)):
                     return YOUNG
@@ -66,8 +65,8 @@ class BasicSim(CA):
 
         raise ValueError
 
-    def toxin_transition(self) -> np.ndarray:
-        return np.zeros((self.n, self.n), dtype=np.uint32)
+    def toxin_transition(self) -> dict:
+        return {}
 
 
 class BasicToxinSim(CA):
@@ -92,7 +91,7 @@ class BasicToxinSim(CA):
         state_grid = self.state_grids[-1]
         toxicity_grid = self.toxicity_grids[-1]
 
-        state = state_grid[y, x]
+        state = state_grid.get((y, x), EMPTY)
 
         if state == SPORE:
             if np.random.random() < self.prob_spore_to_hyphae:
@@ -124,11 +123,9 @@ class BasicToxinSim(CA):
 
         if state == EMPTY:
             for (dx, dy) in MOORE_NBD:
-                if not (0 <= y + dy < self.n and 0 <= x + dx < self.n):
+                if not state_grid.get((y + dy, x + dx), EMPTY) == YOUNG:
                     continue
-                if not state_grid[y + dy, x + dx] == YOUNG:
-                    continue
-                if toxicity_grid[y, x] > self.toxin_threshold:
+                if toxicity_grid.get((y, x), 0.0) > self.toxin_threshold:
                     continue
                 if np.random.random() < self.prob_spread/np.linalg.norm((dx, dy)):
                     return YOUNG
@@ -139,13 +136,46 @@ class BasicToxinSim(CA):
 
         raise ValueError
 
-    def toxin_transition(self) -> np.ndarray:
+    def toxin_transition(self) -> dict:
         state_grid = self.state_grids[-1]
         toxicity_grid = self.toxicity_grids[-1]
-        for x, y in product(range(self.n), range(self.n)):
-            if state_grid[y, x] in TOXIN_RELEASING_STATES:
-                toxicity_grid[y, x] = 1
+        
+        source_grid = {}
+        
+        # Consider all existing toxicity
+        for (y, x), val in toxicity_grid.items():
+            state = state_grid.get((y, x), EMPTY)
+            if state in TOXIN_RELEASING_STATES:
+                source_grid[(y, x)] = 1
             else:
-                toxicity_grid[y, x] = max(toxicity_grid[y][x] - self.toxin_decay, 0)
+                new_val = max(val - self.toxin_decay, 0)
+                if new_val > 0:
+                    source_grid[(y, x)] = new_val
+                    
+        # Consider all toxin releasing states 
+        for (y, x), state in state_grid.items():
+            if state in TOXIN_RELEASING_STATES:
+                source_grid[(y, x)] = 1
 
-        return convolve2d(toxicity_grid, self.toxin_convolution, mode="same", boundary="fill", fillvalue=0)
+        # Sparse convolution
+        new_toxicity_grid = {}
+        kernel = self.toxin_convolution
+        ky, kx = kernel.shape
+        cy, cx = ky // 2, kx // 2
+
+        for (y, x), val in source_grid.items():
+            # Apply kernel
+            for dy in range(ky):
+                for dx in range(kx):
+                    kv = kernel[dy, dx]
+                    # Skip zero entries
+                    if kv == 0:
+                        continue
+                    
+                    target_y = y + (dy - cy)
+                    target_x = x + (dx - cx)
+                    
+                    # Accumulate
+                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get((target_y, target_x), 0.0) + val * kv
+
+        return new_toxicity_grid
