@@ -18,8 +18,8 @@ def main():
         "iterations": 50
     }
 
-    decay_rates = np.linspace(0, 0.1, 40)
-    num_simulations = 40
+    decay_rates = np.linspace(0, 0.1, 5)
+    num_simulations = 20
     val_per_rate = []
     val_per_rate_lower = []
     val_per_rate_upper = []
@@ -48,7 +48,7 @@ def main():
     plt.xlabel("decay rate")
     plt.ylabel("size convex hull divided by total")
     plt.legend(["mean", "lower", "upper"])
-    plt.savefig("results_10_simulations.png")
+    plt.savefig("results_boxes_test.png")
 
 
 if __name__ == "__main__":

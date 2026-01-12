@@ -141,4 +141,12 @@ class CA:
         for i in range(1, len(hull)):
             perimiter_hull += (hull[i] - hull[i - 1]).norm()
 
-        return len(hull)/len(mushroom_and_older_coordinates)
+        hull_area = 0
+        for i in range(len(hull) - 1):
+            hull_area += hull[i].x * hull[i + 1].y - hull[i].y * hull[i + 1].y
+        hull_area += hull[0].x * hull[-1].y - hull[0].y * hull[-1].y
+        hull_area = abs(hull_area)
+        approx_r = (hull_area/np.pi)**0.5
+        approx_boxes = hull_area - np.pi*(approx_r - 1)**2
+
+        return approx_boxes/len(mushroom_and_older_coordinates)
