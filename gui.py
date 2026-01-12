@@ -3,6 +3,9 @@ import numpy as np
 
 from constants import *
 
+import threading
+import queue
+
 from transitions import BasicToxinSim
 from utils import gkern
 
@@ -49,12 +52,34 @@ iter_amount_var = tkinter.StringVar(sim_control_frame)
 iter_amount_var.set("10")
 iter_amount_spinbox = tkinter.Spinbox(sim_control_frame, from_=1, to=100, textvariable=iter_amount_var)
 iter_amount_spinbox.grid(in_=sim_control_frame, row=0, column=0)
+
+update_queue = queue.Queue()
+
 def run_iterations():
     n = int(iter_amount_var.get())
+    threading.Thread(target=sim_worker, args=(n,), daemon=True).start()
+    root.after(100, check_queue)
+
+def sim_worker(n):
     for _ in range(n):
         sim.step()
+        update_queue.put(sim.state_grids[-1].copy())
+
+def check_queue():
+    if not root.winfo_exists():
+        return
+
+    new_data = None
+    try:
+        while True:
+            new_data = update_queue.get_nowait()
+    except queue.Empty:
+        pass
+
+    if new_data is not None:
         ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
         canvas.draw()
+    root.after(20, check_queue)
 run_for_button = tkinter.Button(sim_control_frame, text="Run for n iterations", command=run_iterations)
 run_for_button.grid(in_=sim_control_frame, row=0, column=1)
 
