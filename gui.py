@@ -31,6 +31,16 @@ canvas.mpl_connect("key_press_event", key_press_handler)
 
 button_quit = tkinter.Button(master=root, text="Quit", command=root.destroy)
 
+sim_control_frame = tkinter.Frame(root)
+sim_control_frame.columnconfigure(0, weight=1)
+sim_control_frame.columnconfigure(1, weight=1)
+iter_amount_spinbox = tkinter.Spinbox(sim_control_frame, from_=0, to=100,)
+iter_amount_spinbox.grid(in_=sim_control_frame, row=0, column=0)
+def run_iterations():
+    return
+run_for_button = tkinter.Button(sim_control_frame, text="Run for n iterations", command=run_iterations)
+run_for_button.grid(in_=sim_control_frame, row=0, column=1)
+
 slider_frame = tkinter.Frame(root)
 slider_frame.columnconfigure(0, weight=1)
 slider_frame.columnconfigure(1, weight=1)
@@ -62,6 +72,8 @@ slider_toxin_decay.grid(in_=slider_frame, row=1, column=0, padx=5, pady=5)
 slider_toxin_treshold.grid(in_=slider_frame, row=1, column=1, padx=5, pady=5)
 
 button_quit.pack(side=tkinter.BOTTOM)
+
+sim_control_frame.pack(side=tkinter.BOTTOM)
 
 slider_frame.pack(side=tkinter.BOTTOM, fill=tkinter.X)
 
