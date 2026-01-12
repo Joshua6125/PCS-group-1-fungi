@@ -35,7 +35,7 @@ root.wm_title("FFR simulation")
 
 cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=10)
 fig, ax = plt.subplots()
-im = ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
+ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
 
 canvas = FigureCanvasTkAgg(fig, master=root) 
 canvas.draw()
@@ -77,8 +77,7 @@ def check_queue():
         pass
 
     if new_data is not None:
-        print(new_data)
-        im.set_data(new_data)
+        ax.imshow(sim.state_grids[-1], origin='lower', cmap=cmap)
         canvas.draw()
     root.after(20, check_queue)
 run_for_button = tkinter.Button(sim_control_frame, text="Run for n iterations", command=run_iterations)
