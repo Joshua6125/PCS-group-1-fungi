@@ -1,5 +1,5 @@
 from itertools import product
-from constants import (
+from config import (
     EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
     INERT
 )
@@ -16,29 +16,21 @@ class CA:
         self.time = 0
 
     def __repr__(self):
-        state_emojis = {
-            EMPTY: "⬛",
-            SPORE: "✨",
-            YOUNG: "👶",
-            MATURING: "👦",
-            MUSHROOMS: "🍄",
-            OLDER: "🧑",
-            DECAYING: "👴",
-            DEAD1: "💀",
-            DEAD2: "💀️",
-            INERT: "🟥"
-        }
-
         message = ""
         for y in range(self.n):
             for x in range(self.n):
-                # Uncomment for hacky visualization of toxicity.
-                threshold = 0.3
-                if self.toxicity_grids[-1][y, x] > threshold and self.state_grids[-1][y, x] == EMPTY:
-                    message += "🟪"
+                message += str(self.state_grids[-1][y, x])
+            message += "\n"
+        return message
+
+    def get_representation_grid(self, show_toxins: bool = False):
+        message = ""
+        for y in range(self.n):
+            for x in range(self.n):
+                if show_toxins:
+                    message += str(round(self.toxicity_grids[-1][y, x], 1)) + " "
                 else:
-                    message += state_emojis[self.state_grids[-1][y][x]]
-                # message += state_emojis[self.state_grids[-1][y, x]]
+                    message += str(self.state_grids[-1][y, x])
             message += "\n"
         return message
 
@@ -53,9 +45,9 @@ class CA:
 
     def reset(self):
         self.state_grids: list[np.ndarray] = [
-            np.zeros((n, n), dtype=np.uint32)]
+            np.zeros((self.n, self.n), dtype=np.uint32)]
         self.toxicity_grids: list[np.ndarray] = [
-            np.zeros((n, n), dtype=np.float32)]
+            np.zeros((self.n, self.n), dtype=np.float32)]
         self.time = 0
 
     def set_state(self, x: int, y: int, state: int, time: int = 0):

@@ -1,7 +1,7 @@
 from itertools import product
 from scipy.signal import convolve2d
 from CA import CA
-from constants import (
+from config import (
     EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
     INERT, MOORE_NBD, TOXIN_RELEASING_STATES
 )
