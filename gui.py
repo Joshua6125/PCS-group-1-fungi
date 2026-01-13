@@ -1,29 +1,18 @@
 import tkinter
 import numpy as np
 
-from constants import *
+from config import *
 
 import threading
 import queue
 
 from transitions import BasicToxinSim
-from utils import gkern
 
 # Implement the default Matplotlib key bindings.
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-
-sim_parameters = {
-    "n": 75,
-    "prob_spore_to_hyphae": 1.0,
-    "prob_mushroom": 0.7,
-    "prob_spread": 0.5,
-    "toxin_threshold": 0.3,
-    "toxin_decay": 0.05,
-    "toxin_convolution": gkern(5, 1, 1)
-}
 
 colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 0.5), (0, 0, 1),
           (1, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
