@@ -31,5 +31,6 @@ sim_parameters = {
     "prob_spread": 0.5,
     "toxin_threshold": 0.3,
     "toxin_decay": 0.05,
-    "toxin_convolution": gkern(5, 1, 1)
+    "toxin_convolution": gkern(5, 1, 1),
+    "show_toxins": False
 }

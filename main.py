@@ -4,6 +4,8 @@ import time
 
 
 def main():
+    sim_parameters["n"] = 20
+    sim_parameters["show_toxins"] = True
     simulation = BasicToxinSim(sim_parameters)
     simulation.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
