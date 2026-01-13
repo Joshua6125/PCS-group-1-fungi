@@ -19,18 +19,19 @@ INERT = 9
 
 # Parameters
 sim_parameters = {
-        "n": 75,
-        "prob_spore_to_hyphae": 1.0,
-        "prob_mushroom": 0.7,
-        "prob_spread": 0.5,
-        "toxin_threshold": 0.3,
-        "toxin_decay": 0.05,
-        "toxin_convolution": gkern(5, 1, 1)
+    "n": 75,
+    "prob_spore_to_hyphae": 1.0,
+    "prob_mushroom": 0.7,
+    "prob_spread": 0.5,
+    "toxin_threshold": 0.3,
+    "toxin_decay": 0.05,
+    "toxin_convolution": gkern(5, 1, 1)
 }
 
 num_iterations = 25
 
-colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 0.5), (0, 0, 1), (1, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
+colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 0.5), (0, 0, 1),
+          (1, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
 
 # Main code
 probabilities = np.linspace(0.1, 1, 10)
@@ -45,7 +46,9 @@ for probability in probabilities:
     fig, ax = plt.subplots()
     ax.imshow(simulation.state_grids[-1], origin='lower', cmap=cmap)
 
-    plt.title(f"Fairy rings ater {num_iterations} steps with spread probability {round(probability, 1)}")
+    plt.title(
+        f"Fairy rings ater {num_iterations} steps with spread probability {round(probability, 1)}")
     if not os.path.exists('./plots/experiment_prob_spread/'):
         os.makedirs('./plots/experiment_prob_spread')
-    plt.savefig(f"./plots/experiment_prob_spread/{num_iterations}_{round(probability, 1)}.png")
+    plt.savefig(
+        f"./plots/experiment_prob_spread/{num_iterations}_{round(probability, 1)}.png")

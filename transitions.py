@@ -7,13 +7,14 @@ from constants import (
 )
 import numpy as np
 
+
 class BasicSim(CA):
     def __init__(self, parameters):
         super().__init__(parameters["n"])
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
-    
+
     def change_parameters(self, parameters):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
@@ -60,7 +61,7 @@ class BasicSim(CA):
                     return YOUNG
             return EMPTY
 
-        if state ==  INERT:
+        if state == INERT:
             return INERT
 
         raise ValueError
@@ -76,7 +77,7 @@ class BasicToxinSim(CA):
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_threshold: float = parameters["toxin_threshold"]
-        self.toxin_decay : float = parameters["toxin_decay"]
+        self.toxin_decay: float = parameters["toxin_decay"]
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
     def change_parameters(self, parameters):
@@ -84,7 +85,7 @@ class BasicToxinSim(CA):
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_threshold: float = parameters["toxin_threshold"]
-        self.toxin_decay : float = parameters["toxin_decay"]
+        self.toxin_decay: float = parameters["toxin_decay"]
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
     def state_transition(self, x: int, y: int) -> int:
@@ -131,7 +132,7 @@ class BasicToxinSim(CA):
                     return YOUNG
             return EMPTY
 
-        if state ==  INERT:
+        if state == INERT:
             return INERT
 
         raise ValueError

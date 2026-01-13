@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def gkern(l, sig, multi):
     """
     creates gaussian kernel with side length `l` and a sigma of `sig`

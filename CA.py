@@ -80,7 +80,7 @@ class CA:
         
         self.state_grids.append(new_state_grid)
 
-        toxicity_grid =  self.toxin_transition();
+        toxicity_grid = self.toxin_transition()
         self.toxicity_grids.append(toxicity_grid)
         self.time += 1
     
@@ -89,7 +89,7 @@ class CA:
         self.toxicity_grids = [{}]
         self.time = 0
 
-    def set_state(self, x: int, y: int, state: int, time: int=0):
+    def set_state(self, x: int, y: int, state: int, time: int = 0):
         """
         Set the state of a single cell value
 
@@ -107,7 +107,7 @@ class CA:
         else:
             self.state_grids[time][(y, x)] = state
 
-    def set_toxicity(self, x: int, y: int, toxicity: float, time: int=0):
+    def set_toxicity(self, x: int, y: int, toxicity: float, time: int = 0):
         """
         Set the state of a single cell value
 
