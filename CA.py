@@ -7,9 +7,8 @@ import numpy as np
 
 
 class CA:
-    def __init__(self, n: int, show_toxins: bool):
+    def __init__(self, n: int):
         self.n: int = n
-        self.show_toxins = show_toxins
         self.state_grids: list[np.ndarray] = [
             np.zeros((n, n), dtype=np.uint32)]
         self.toxicity_grids: list[np.ndarray] = [
@@ -20,11 +19,18 @@ class CA:
         message = ""
         for y in range(self.n):
             for x in range(self.n):
-                if self.show_toxins:
+                message += str(self.state_grids[-1][y, x])
+            message += "\n"
+        return message
+
+    def get_representation_grid(self, show_toxins: bool = False):
+        message = ""
+        for y in range(self.n):
+            for x in range(self.n):
+                if show_toxins:
                     message += str(round(self.toxicity_grids[-1][y, x], 1)) + " "
                 else:
                     message += str(self.state_grids[-1][y, x])
-
             message += "\n"
         return message
 

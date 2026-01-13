@@ -9,11 +9,11 @@ def main():
     simulation = BasicToxinSim(sim_parameters)
     simulation.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
-    print(simulation)
+    print(simulation.get_representation_grid(sim_parameters["show_toxins"]))
     for _ in range(100):
         time.sleep(0.4)
         simulation.step()
-        sim_string = str(simulation)
+        sim_string = simulation.get_representation_grid(sim_parameters["show_toxins"])
         print(sim_string)
 
 

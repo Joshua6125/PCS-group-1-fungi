@@ -10,7 +10,7 @@ import numpy as np
 
 class BasicSim(CA):
     def __init__(self, parameters):
-        super().__init__(parameters["n"], parameters["show_toxins"])
+        super().__init__(parameters["n"])
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
@@ -73,7 +73,7 @@ class BasicSim(CA):
 
 class BasicToxinSim(CA):
     def __init__(self, parameters):
-        super().__init__(parameters["n"], parameters["show_toxins"])
+        super().__init__(parameters["n"])
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
