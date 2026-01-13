@@ -14,8 +14,8 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-colors = [(0, 0.4, 0), (0, 0.5, 0.5), (0, 0, 0.5), (0, 0, 1),
-          (1, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
+colors = [(0, 0.4, 0), (1, 1, 1), (0, 0, 0.5), (0, 0, 1),
+          (.8, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
 
 sim = BasicToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
