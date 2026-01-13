@@ -1,7 +1,7 @@
 import tkinter
 import numpy as np
 
-from config import *
+from config import SPORE, sim_parameters
 
 import threading
 import queue
