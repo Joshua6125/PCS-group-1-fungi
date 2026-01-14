@@ -1,5 +1,3 @@
-from itertools import product
-from scipy.signal import convolve2d
 from CA import CA
 from config import (
     EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
@@ -140,9 +138,9 @@ class BasicToxinSim(CA):
     def toxin_transition(self) -> dict:
         state_grid = self.state_grids[-1]
         toxicity_grid = self.toxicity_grids[-1]
-        
+
         source_grid = {}
-        
+
         # Consider all existing toxicity
         for (y, x), val in toxicity_grid.items():
             state = state_grid.get((y, x), EMPTY)
@@ -152,8 +150,8 @@ class BasicToxinSim(CA):
                 new_val = max(val - self.toxin_decay, 0)
                 if new_val > 0:
                     source_grid[(y, x)] = new_val
-                    
-        # Consider all toxin releasing states 
+
+        # Consider all toxin releasing states
         for (y, x), state in state_grid.items():
             if state in TOXIN_RELEASING_STATES:
                 source_grid[(y, x)] = 1
@@ -172,10 +170,10 @@ class BasicToxinSim(CA):
                     # Skip zero entries
                     if kv == 0:
                         continue
-                    
+
                     target_y = y + (dy - cy)
                     target_x = x + (dx - cx)
-                    
+
                     # Accumulate
                     new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get((target_y, target_x), 0.0) + val * kv
 
