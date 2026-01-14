@@ -1,9 +1,7 @@
-from itertools import product
 from constants import (
     EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
     INERT, MOORE_NBD
 )
-import numpy as np
 
 
 class CA:

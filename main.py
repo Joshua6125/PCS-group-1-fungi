@@ -1,5 +1,5 @@
 from constants import SPORE
-from transitions import BasicSim, BasicToxinSim
+from transitions import BasicToxinSim
 from utils import gkern
 import time
 
