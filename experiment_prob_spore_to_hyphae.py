@@ -1,32 +1,10 @@
 import numpy as np
 from transitions import BasicSim
-from utils import gkern
+from config import SPORE, sim_parameters
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import os
 
-# State names
-EMPTY = 0
-SPORE = 1
-YOUNG = 2
-MATURING = 3
-MUSHROOMS = 4
-OLDER = 5
-DECAYING = 6
-DEAD1 = 7
-DEAD2 = 8
-INERT = 9
-
-# Parameters
-sim_parameters = {
-    "n": 75,
-    "prob_spore_to_hyphae": 1.0,
-    "prob_mushroom": 0.7,
-    "prob_spread": 0.5,
-    "toxin_threshold": 0.3,
-    "toxin_decay": 0.05,
-    "toxin_convolution": gkern(5, 1, 1)
-}
 
 num_iterations = 25
 

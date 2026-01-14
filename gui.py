@@ -1,13 +1,12 @@
 import tkinter
 import numpy as np
 
-from constants import SPORE
+from config import SPORE, sim_parameters
 
 import threading
 import queue
 
 from transitions import BasicToxinSim
-from utils import gkern
 
 # Implement the default Matplotlib key bindings.
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -15,18 +14,8 @@ from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-sim_parameters = {
-    "n": 75,
-    "prob_spore_to_hyphae": 1.0,
-    "prob_mushroom": 0.7,
-    "prob_spread": 0.5,
-    "toxin_threshold": 0.3,
-    "toxin_decay": 0.05,
-    "toxin_convolution": gkern(5, 1, 1)
-}
-
-colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 0.5), (0, 0, 1),
-          (1, 0, 0), (0.5, 0.5, 0), (0, 0, 0), (0, 0, 0), (1, 1, 1)]
+colors = [(0, 0.4, 0), (1, 1, 1), (1, .8, .8), (1, .4, .4),
+          (.8, 0, 0), (0.4, 0.2, 0), (.4, .4, 0), (.1, .2, 0), (.1, .2, 0)]
 
 sim = BasicToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
@@ -177,7 +166,7 @@ def update_toxin_decay(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
+slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=0.1, digits=3, resolution=0.005, orient=tkinter.HORIZONTAL,
                                    command=update_toxin_decay, label="Toxin decay")
 slider_toxin_decay.set(sim_parameters["toxin_decay"])
 
