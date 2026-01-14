@@ -21,12 +21,32 @@ sim = BasicToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 
-def state_dict_to_grid(state_dict, n):
-    """Convert sparse dictionary state into a dense n x n grid for plotting."""
-    dense = np.zeros((n, n), dtype=int)
+def state_dict_to_grid(state_dict):
+    """Convert sparse dictionary state into a dense grid for plotting, expanding bounds."""
+    if not state_dict:
+        # Default small grid
+        return np.zeros((sim_parameters["n"], sim_parameters["n"]), dtype=int)
+
+    xs = [x for _, x in state_dict.keys()]
+    ys = [y for y, _ in state_dict.keys()]
+
+    # Determine bounds
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+
+    # Add padding
+    pad = 5
+    min_x -= pad
+    max_x += pad
+    min_y -= pad
+    max_y += pad
+
+    height = max_y - min_y + 1
+    width = max_x - min_x + 1
+
+    dense = np.zeros((height, width), dtype=int)
     for (y, x), val in state_dict.items():
-        if 0 <= y < n and 0 <= x < n:
-            dense[y, x] = val
+        dense[y - min_y, x - min_x] = val
     return dense
 
 root = tkinter.Tk()
@@ -34,8 +54,8 @@ root.wm_title("FFR simulation")
 
 cmap = ListedColormap(colors)
 fig, ax = plt.subplots()
-im = ax.imshow(state_dict_to_grid(
-    sim.state_grids[-1], sim_parameters["n"]), origin='lower', cmap=cmap, vmin=0, vmax=len(colors)-1)
+grid_data = state_dict_to_grid(sim.state_grids[-1])
+im = ax.imshow(grid_data, origin='lower', cmap=cmap, vmin=0, vmax=len(colors)-1)
 
 
 canvas = FigureCanvasTkAgg(fig, master=root)
@@ -71,7 +91,12 @@ update_queue = queue.Queue()
 def reset_simulation():
     sim.reset()
     sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
-    im.set_data(state_dict_to_grid(sim.state_grids[-1], sim_parameters["n"]))
+    data = state_dict_to_grid(sim.state_grids[-1])
+    im.set_data(data)
+    h, w = data.shape
+    im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
+    ax.set_xlim(-0.5, w-0.5)
+    ax.set_ylim(-0.5, h-0.5)
     canvas.draw()
 
 
@@ -90,8 +115,7 @@ def run_iterations():
 def sim_worker(n):
     for _ in range(n):
         sim.step()
-        update_queue.put(state_dict_to_grid(
-            sim.state_grids[-1], sim_parameters["n"]))
+        update_queue.put(state_dict_to_grid(sim.state_grids[-1]))
     root.after(0, on_simulation_finished)
 
 
@@ -111,6 +135,10 @@ def check_queue():
 
     if new_data is not None:
         im.set_data(new_data)
+        h, w = new_data.shape
+        im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
+        ax.set_xlim(-0.5, w-0.5)
+        ax.set_ylim(-0.5, h-0.5)
         canvas.draw()
     check_queue_id = root.after(20, check_queue)
 
