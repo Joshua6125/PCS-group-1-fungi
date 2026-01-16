@@ -177,11 +177,25 @@ slider_prob_spread.grid(in_=slider_frame, row=0, column=1, padx=5, pady=5)
 slider_toxin_decay.grid(in_=slider_frame, row=1, column=0, padx=5, pady=5)
 slider_toxin_threshold.grid(in_=slider_frame, row=1, column=1, padx=5, pady=5)
 
+
 button_quit.pack(side=tkinter.BOTTOM)
 
 sim_control_frame.pack(side=tkinter.BOTTOM)
 
 slider_frame.pack(side=tkinter.BOTTOM, fill=tkinter.X)
+
+view = "CA"
+def switch_view():
+    global view
+    view = "CA" if view == "Toxins" else "Toxins"
+    match view:
+        case "CA":
+            button_switch_view.config(text="Show toxins")
+        case "Toxins":
+            button_switch_view.config(text="Show CA")
+    
+button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)
+button_switch_view.pack(side=tkinter.BOTTOM)
 
 toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
 canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
