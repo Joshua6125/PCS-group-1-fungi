@@ -34,3 +34,10 @@ sim_parameters = {
     "toxin_convolution": gkern(5, 1, 1),
     "show_toxins": False
 }
+
+colors = [(0, 0.4, 0), (1, 1, 1), (1, .8, .8), (1, .4, .4),
+          (.8, 0, 0), (0.4, 0.2, 0), (.4, .4, 0), (.1, .2, 0), (.1, .2, 0)]
+state_names = [
+    'Empty', 'Spore', 'Young', 'Maturing', 'Mushrooms', 'Older', 'Decaying',
+    'Dead',
+]
