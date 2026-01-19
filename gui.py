@@ -64,7 +64,7 @@ im = ax.imshow(grid_data, origin='lower', cmap=cmap, vmin=0, vmax=len(colors)-1)
 
 patches = [mpatches.Patch(color=col, label=lab) for col, lab in zip(colors, state_names)]
 legend = ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-colorbar = plt.colorbar(im)
+colorbar = plt.colorbar(im, label="Toxicity value")
 colorbar.ax.set_visible(False)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
