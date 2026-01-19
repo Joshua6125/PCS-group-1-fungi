@@ -1,7 +1,7 @@
 import tkinter
 import numpy as np
 
-from config import SPORE, sim_parameters
+from config import SPORE, sim_parameters, colors, state_names
 
 import threading
 import queue
@@ -13,9 +13,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
+import matplotlib.patches as mpatches 
 
-colors = [(0, 0.4, 0), (1, 1, 1), (1, .8, .8), (1, .4, .4),
-          (.8, 0, 0), (0.4, 0.2, 0), (.4, .4, 0), (.1, .2, 0), (.1, .2, 0)]
 
 sim = ProbToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
@@ -57,6 +56,10 @@ fig, ax = plt.subplots()
 grid_data = dict_to_grid(sim.state_grids[-1])
 im = ax.imshow(grid_data, origin='lower', cmap=cmap, vmin=0, vmax=len(colors)-1)
 
+patches = [mpatches.Patch(color=col, label=lab) for col, lab in zip(colors, state_names)]
+legend = ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+colorbar = plt.colorbar(im, label="Toxicity value")
+colorbar.ax.set_visible(False)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.draw()
@@ -138,10 +141,15 @@ def check_queue():
             grid = dict_to_grid(state_data)
             im.set_cmap(cmap)
             im.set_clim(0, len(colors) - 1)
+
+            legend.set_visible(True)
+            colorbar.ax.set_visible(False)
         else:
             grid = dict_to_grid(toxin_data)
             im.set_cmap('viridis') 
             im.set_clim(0, 1.0) 
+            legend.set_visible(False)
+            colorbar.ax.set_visible(True)
             
         im.set_data(grid)
         h, w = grid.shape
