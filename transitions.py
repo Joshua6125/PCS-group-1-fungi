@@ -126,7 +126,8 @@ class BasicToxinSim(CA):
                     continue
                 if toxicity_grid.get((y, x), 0.0) > self.toxin_threshold:
                     continue
-                if np.random.random() < self.prob_spread/np.linalg.norm((dx, dy)):
+                if np.random.random() <\
+                        self.prob_spread / np.linalg.norm((dx, dy)):
                     return YOUNG
             return EMPTY
 
@@ -175,8 +176,9 @@ class BasicToxinSim(CA):
                     target_x = x + (dx - cx)
 
                     # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get(
-                        (target_y, target_x), 0.0) + val * kv
+                    new_toxicity_grid[(target_y, target_x)] =\
+                        new_toxicity_grid.get((target_y, target_x), 0.0)\
+                        + val * kv
 
         return new_toxicity_grid
 
@@ -237,7 +239,8 @@ class ProbToxinSim(CA):
                     continue
                 if np.random.random() < toxicity_grid.get((y, x), 0.0):
                     continue
-                if np.random.random() < self.prob_spread/np.linalg.norm((dx, dy)):
+                if np.random.random() <\
+                        self.prob_spread / np.linalg.norm((dx, dy)):
                     return YOUNG
             return EMPTY
 
@@ -286,7 +289,8 @@ class ProbToxinSim(CA):
                     target_x = x + (dx - cx)
 
                     # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get(
-                        (target_y, target_x), 0.0) + val * kv
+                    new_toxicity_grid[(target_y, target_x)] =\
+                        new_toxicity_grid.get((target_y, target_x), 0.0) +\
+                        val * kv
 
         return new_toxicity_grid
