@@ -9,3 +9,7 @@ def gkern(l, sig, multi):
     gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
     kernel = np.outer(gauss, gauss)
     return kernel / np.sum(kernel) * multi
+
+def fdm_kern(D=24.192):
+    kernel = D*np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
+    return kernel
