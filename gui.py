@@ -227,7 +227,7 @@ def switch_view():
     global view
     view = "CA" if view == "Toxins" else "Toxins"
     button_switch_view.config(text="Show CA" if view == "Toxins" else "Show toxins")
-    if sim.state_grids:
+    if sim.state_grids and sim.toxicity_grids:
         update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
     
     
