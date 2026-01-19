@@ -99,6 +99,10 @@ def reset_simulation():
     ax.set_ylim(-0.5, h-0.5)
     canvas.draw()
 
+    global view
+    if view == "Toxins":
+        switch_view()
+
 
 def on_simulation_finished():
     run_for_button.config(state="normal")
