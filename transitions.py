@@ -175,7 +175,8 @@ class BasicToxinSim(CA):
                     target_x = x + (dx - cx)
 
                     # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get((target_y, target_x), 0.0) + val * kv
+                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get(
+                        (target_y, target_x), 0.0) + val * kv
 
         return new_toxicity_grid
 
@@ -285,6 +286,7 @@ class ProbToxinSim(CA):
                     target_x = x + (dx - cx)
 
                     # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get((target_y, target_x), 0.0) + val * kv
+                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get(
+                        (target_y, target_x), 0.0) + val * kv
 
         return new_toxicity_grid

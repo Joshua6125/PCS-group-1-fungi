@@ -35,9 +35,11 @@ class CA:
         for y in range(min_y, max_y):
             for x in range(min_x, max_x):
                 if show_toxins:
-                    message += str(round(self.toxicity_grids[-1].get((y, x), 0.0), 1)) + " "
+                    message += str(
+                        round(self.toxicity_grids[-1].get((y, x), 0.0), 1)) + " "
                 else:
-                    message += str(self.state_grids[-1].get((y, x), EMPTY)) + " "
+                    message += str(
+                        self.state_grids[-1].get((y, x), EMPTY)) + " "
             message += "\n"
         return message
 
