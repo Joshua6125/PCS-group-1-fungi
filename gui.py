@@ -129,7 +129,9 @@ def check_queue():
     except queue.Empty:
         pass
 
-    if new_data_pair is not None:
+    if new_data_pair is not None and\
+       new_data_pair[0] is not None and\
+       new_data_pair[1] is not None:
         state_data, toxin_data = new_data_pair
         
         if view == "CA":
