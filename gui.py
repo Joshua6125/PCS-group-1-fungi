@@ -1,7 +1,7 @@
 import tkinter
 import numpy as np
 
-from config import SPORE, sim_parameters
+from config import SPORE, sim_parameters, colors, state_names
 
 import threading
 import queue
@@ -15,12 +15,6 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 import matplotlib.patches as mpatches 
 
-colors = [(0, 0.4, 0), (1, 1, 1), (1, .8, .8), (1, .4, .4),
-          (.8, 0, 0), (0.4, 0.2, 0), (.4, .4, 0), (.1, .2, 0), (.1, .2, 0)]
-state_names = [
-    'Empty', 'Spore', 'Young', 'Maturing', 'Mushrooms', 'Older', 'Decaying', 
-    'Dead',
-]
 
 sim = ProbToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
