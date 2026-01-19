@@ -21,7 +21,8 @@ sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 
 def dict_to_grid(state_dict):
-    """Convert sparse dictionary state into a dense grid for plotting, expanding bounds."""
+    """Convert sparse dictionary state into a dense grid for plotting, 
+    expanding bounds."""
     if not state_dict:
         # Default small grid
         return np.zeros((sim_parameters["n"], sim_parameters["n"]))
@@ -191,7 +192,8 @@ def update_prob_spore_to_hyphae(new_val):
 slider_prob_spore_to_hyphae = tkinter.Scale(slider_frame, from_=0, to=1,
                                             digits=3, resolution=0.05,
                                             orient=tkinter.HORIZONTAL,
-                                            command=update_prob_spore_to_hyphae, label="Probability spore to hyphae")
+                                            command=update_prob_spore_to_hyphae,
+                                            label="Probability spore to hyphae")
 slider_prob_spore_to_hyphae.set(sim_parameters["prob_spore_to_hyphae"])
 
 
@@ -200,8 +202,10 @@ def update_prob_spread(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_prob_spread = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
-                                   command=update_prob_spread, label="Probability of spreading")
+slider_prob_spread = tkinter.Scale(slider_frame, from_=0, to=1, digits=3,
+                                   resolution=0.05, orient=tkinter.HORIZONTAL,
+                                   command=update_prob_spread,
+                                   label="Probability of spreading")
 slider_prob_spread.set(sim_parameters["prob_spread"])
 
 
@@ -210,8 +214,11 @@ def update_toxin_threshold(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_toxin_threshold = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
-                                       command=update_toxin_threshold, label="Toxin threshold")
+slider_toxin_threshold = tkinter.Scale(slider_frame, from_=0, to=1, digits=3,
+                                       resolution=0.05,
+                                       orient=tkinter.HORIZONTAL,
+                                       command=update_toxin_threshold,
+                                       label="Toxin threshold")
 slider_toxin_threshold.set(sim_parameters["toxin_threshold"])
 
 
@@ -220,8 +227,10 @@ def update_toxin_decay(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=0.1, digits=3, resolution=0.005, orient=tkinter.HORIZONTAL,
-                                   command=update_toxin_decay, label="Toxin decay")
+slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=0.1, digits=3,
+                                   resolution=0.005, orient=tkinter.HORIZONTAL,
+                                   command=update_toxin_decay,
+                                   label="Toxin decay")
 slider_toxin_decay.set(sim_parameters["toxin_decay"])
 
 
