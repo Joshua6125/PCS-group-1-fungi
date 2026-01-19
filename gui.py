@@ -13,7 +13,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
-import matplotlib.patches as mpatches 
+import matplotlib.patches as mpatches
 
 
 sim = ProbToxinSim(sim_parameters)
@@ -21,7 +21,8 @@ sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 
 def dict_to_grid(state_dict):
-    """Convert sparse dictionary state into a dense grid for plotting, expanding bounds."""
+    """Convert sparse dictionary state into a dense grid for plotting, 
+    expanding bounds."""
     if not state_dict:
         # Default small grid
         return np.zeros((sim_parameters["n"], sim_parameters["n"]))
@@ -48,16 +49,20 @@ def dict_to_grid(state_dict):
         dense[y - min_y, x - min_x] = val
     return dense
 
+
 root = tkinter.Tk()
 root.wm_title("FFR simulation")
 
 cmap = ListedColormap(colors)
 fig, ax = plt.subplots()
 grid_data = dict_to_grid(sim.state_grids[-1])
-im = ax.imshow(grid_data, origin='lower', cmap=cmap, vmin=0, vmax=len(colors)-1)
+im = ax.imshow(grid_data, origin='lower', cmap=cmap,
+               vmin=0, vmax=len(colors)-1)
 
-patches = [mpatches.Patch(color=col, label=lab) for col, lab in zip(colors, state_names)]
-legend = ax.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+patches = [mpatches.Patch(color=col, label=lab)
+           for col, lab in zip(colors, state_names)]
+legend = ax.legend(handles=patches, bbox_to_anchor=(
+    1.05, 1), loc=2, borderaxespad=0.)
 colorbar = plt.colorbar(im, label="Toxicity value")
 colorbar.ax.set_visible(False)
 
@@ -67,6 +72,7 @@ canvas.draw()
 toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
 toolbar.update()
 
+
 def on_closing():
     global check_queue_id
     if check_queue_id:
@@ -74,6 +80,7 @@ def on_closing():
         check_queue_id = None
     root.quit()
     root.destroy()
+
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 button_quit = tkinter.Button(master=root, text="Quit", command=on_closing)
@@ -114,11 +121,13 @@ def run_iterations():
     n = int(iter_amount_var.get())
     threading.Thread(target=sim_worker, args=(n,), daemon=True).start()
 
+
 def sim_worker(n):
     for _ in range(n):
         sim.step()
         update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
     root.after(0, on_simulation_finished)
+
 
 def check_queue():
     global check_queue_id
@@ -136,7 +145,7 @@ def check_queue():
        new_data_pair[0] is not None and\
        new_data_pair[1] is not None:
         state_data, toxin_data = new_data_pair
-        
+
         if view == "CA":
             grid = dict_to_grid(state_data)
             im.set_cmap(cmap)
@@ -146,18 +155,18 @@ def check_queue():
             colorbar.ax.set_visible(False)
         else:
             grid = dict_to_grid(toxin_data)
-            im.set_cmap('viridis') 
-            im.set_clim(0, 1.0) 
+            im.set_cmap('viridis')
+            im.set_clim(0, 1.0)
             legend.set_visible(False)
             colorbar.ax.set_visible(True)
-            
+
         im.set_data(grid)
         h, w = grid.shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
         canvas.draw()
-        
+
     check_queue_id = root.after(20, check_queue)
 
 
@@ -183,7 +192,8 @@ def update_prob_spore_to_hyphae(new_val):
 slider_prob_spore_to_hyphae = tkinter.Scale(slider_frame, from_=0, to=1,
                                             digits=3, resolution=0.05,
                                             orient=tkinter.HORIZONTAL,
-                                            command=update_prob_spore_to_hyphae, label="Probability spore to hyphae")
+                                            command=update_prob_spore_to_hyphae,
+                                            label="Probability spore to hyphae")
 slider_prob_spore_to_hyphae.set(sim_parameters["prob_spore_to_hyphae"])
 
 
@@ -192,8 +202,10 @@ def update_prob_spread(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_prob_spread = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
-                                   command=update_prob_spread, label="Probability of spreading")
+slider_prob_spread = tkinter.Scale(slider_frame, from_=0, to=1, digits=3,
+                                   resolution=0.05, orient=tkinter.HORIZONTAL,
+                                   command=update_prob_spread,
+                                   label="Probability of spreading")
 slider_prob_spread.set(sim_parameters["prob_spread"])
 
 
@@ -202,8 +214,11 @@ def update_toxin_threshold(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_toxin_threshold = tkinter.Scale(slider_frame, from_=0, to=1, digits=3, resolution=0.05, orient=tkinter.HORIZONTAL,
-                                      command=update_toxin_threshold, label="Toxin threshold")
+slider_toxin_threshold = tkinter.Scale(slider_frame, from_=0, to=1, digits=3,
+                                       resolution=0.05,
+                                       orient=tkinter.HORIZONTAL,
+                                       command=update_toxin_threshold,
+                                       label="Toxin threshold")
 slider_toxin_threshold.set(sim_parameters["toxin_threshold"])
 
 
@@ -212,8 +227,10 @@ def update_toxin_decay(new_val):
     sim.change_parameters(sim_parameters)
 
 
-slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=0.1, digits=3, resolution=0.005, orient=tkinter.HORIZONTAL,
-                                   command=update_toxin_decay, label="Toxin decay")
+slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=0.1, digits=3,
+                                   resolution=0.005, orient=tkinter.HORIZONTAL,
+                                   command=update_toxin_decay,
+                                   label="Toxin decay")
 slider_toxin_decay.set(sim_parameters["toxin_decay"])
 
 
@@ -231,15 +248,19 @@ sim_control_frame.pack(side=tkinter.BOTTOM)
 slider_frame.pack(side=tkinter.BOTTOM, fill=tkinter.X)
 
 view = "CA"
+
+
 def switch_view():
     global view
     view = "CA" if view == "Toxins" else "Toxins"
-    button_switch_view.config(text="Show CA" if view == "Toxins" else "Show toxins")
+    button_switch_view.config(text="Show CA" if view ==
+                              "Toxins" else "Show toxins")
     if sim.state_grids and sim.toxicity_grids:
         update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
-    
-    
-button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)
+
+
+button_switch_view = tkinter.Button(
+    root, text="Show toxins", command=switch_view)
 button_switch_view.pack(side=tkinter.BOTTOM)
 
 toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)

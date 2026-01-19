@@ -10,7 +10,14 @@ class CA:
         self.toxicity_grids: list[dict[tuple[int, int], float]] = [{}]
         self.time = 0
 
-    def get_grid_representation(self, min_x: int = 0, max_x: int | None = None, min_y: int = 0, max_y: int | None = None, show_toxins: bool = False):
+    def get_grid_representation(
+        self,
+        min_x: int = 0,
+        max_x: int | None = None,
+        min_y: int = 0,
+        max_y: int | None = None,
+        show_toxins: bool = False
+    ):
         current_state = self.state_grids[-1]
 
         # Calculate dynamic bounds
@@ -35,9 +42,13 @@ class CA:
         for y in range(min_y, max_y):
             for x in range(min_x, max_x):
                 if show_toxins:
-                    message += str(round(self.toxicity_grids[-1].get((y, x), 0.0), 1)) + " "
+                    message += str(round(
+                        self.toxicity_grids[-1].get((y, x), 0.0), 1
+                    )) + " "
                 else:
-                    message += str(self.state_grids[-1].get((y, x), EMPTY)) + " "
+                    message += str(
+                        self.state_grids[-1].get((y, x), EMPTY)
+                    ) + " "
             message += "\n"
         return message
 
