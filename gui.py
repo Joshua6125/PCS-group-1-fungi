@@ -133,23 +133,23 @@ def check_queue():
        new_data_pair[0] is not None and\
        new_data_pair[1] is not None:
         state_data, toxin_data = new_data_pair
-        
+
         if view == "CA":
             grid = dict_to_grid(state_data)
             im.set_cmap(cmap)
             im.set_clim(0, len(colors) - 1)
         else:
             grid = dict_to_grid(toxin_data)
-            im.set_cmap('viridis') 
-            im.set_clim(0, 1.0) 
-            
+            im.set_cmap('viridis')
+            im.set_clim(0, 1.0)
+
         im.set_data(grid)
         h, w = grid.shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
         canvas.draw()
-        
+
     check_queue_id = root.after(20, check_queue)
 
 
@@ -229,8 +229,8 @@ def switch_view():
     button_switch_view.config(text="Show CA" if view == "Toxins" else "Show toxins")
     if sim.state_grids and sim.toxicity_grids:
         update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
-    
-    
+
+
 button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)
 button_switch_view.pack(side=tkinter.BOTTOM)
 
