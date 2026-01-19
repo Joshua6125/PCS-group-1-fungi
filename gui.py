@@ -21,11 +21,11 @@ sim = ProbToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 
-def state_dict_to_grid(state_dict):
+def dict_to_grid(state_dict):
     """Convert sparse dictionary state into a dense grid for plotting, expanding bounds."""
     if not state_dict:
         # Default small grid
-        return np.zeros((sim_parameters["n"], sim_parameters["n"]), dtype=int)
+        return np.zeros((sim_parameters["n"], sim_parameters["n"]))
 
     xs = [x for _, x in state_dict.keys()]
     ys = [y for y, _ in state_dict.keys()]
@@ -44,7 +44,7 @@ def state_dict_to_grid(state_dict):
     height = max_y - min_y + 1
     width = max_x - min_x + 1
 
-    dense = np.zeros((height, width), dtype=int)
+    dense = np.zeros((height, width))
     for (y, x), val in state_dict.items():
         dense[y - min_y, x - min_x] = val
     return dense
@@ -54,7 +54,7 @@ root.wm_title("FFR simulation")
 
 cmap = ListedColormap(colors)
 fig, ax = plt.subplots()
-grid_data = state_dict_to_grid(sim.state_grids[-1])
+grid_data = dict_to_grid(sim.state_grids[-1])
 im = ax.imshow(grid_data, origin='lower', cmap=cmap, vmin=0, vmax=len(colors)-1)
 
 
@@ -91,7 +91,7 @@ update_queue = queue.Queue()
 def reset_simulation():
     sim.reset()
     sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
-    data = state_dict_to_grid(sim.state_grids[-1])
+    data = dict_to_grid(sim.state_grids[-1])
     im.set_data(data)
     h, w = data.shape
     im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
@@ -111,35 +111,43 @@ def run_iterations():
     n = int(iter_amount_var.get())
     threading.Thread(target=sim_worker, args=(n,), daemon=True).start()
 
-
 def sim_worker(n):
     for _ in range(n):
         sim.step()
-        update_queue.put(state_dict_to_grid(sim.state_grids[-1]))
+        update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
     root.after(0, on_simulation_finished)
-
-
-check_queue_id = None
 
 def check_queue():
     global check_queue_id
     if not root.winfo_exists():
         return
 
-    new_data = None
+    new_data_pair = None
     try:
         while True:
-            new_data = update_queue.get_nowait()
+            new_data_pair = update_queue.get_nowait()
     except queue.Empty:
         pass
 
-    if new_data is not None:
-        im.set_data(new_data)
-        h, w = new_data.shape
+    if new_data_pair is not None:
+        state_data, toxin_data = new_data_pair
+        
+        if view == "CA":
+            grid = dict_to_grid(state_data)
+            im.set_cmap(cmap)
+            im.set_clim(0, len(colors) - 1)
+        else:
+            grid = dict_to_grid(toxin_data)
+            im.set_cmap('viridis') 
+            im.set_clim(0, 1.0) 
+            
+        im.set_data(grid)
+        h, w = grid.shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
         canvas.draw()
+        
     check_queue_id = root.after(20, check_queue)
 
 
@@ -216,11 +224,10 @@ view = "CA"
 def switch_view():
     global view
     view = "CA" if view == "Toxins" else "Toxins"
-    match view:
-        case "CA":
-            button_switch_view.config(text="Show toxins")
-        case "Toxins":
-            button_switch_view.config(text="Show CA")
+    button_switch_view.config(text="Show CA" if view == "Toxins" else "Show toxins")
+    if sim.state_grids:
+        update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
+    
     
 button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)
 button_switch_view.pack(side=tkinter.BOTTOM)
