@@ -55,7 +55,7 @@ root.wm_title("FFR simulation")
 
 cmap = ListedColormap(colors)
 fig, ax = plt.subplots()
-grid_data = dict_to_grid(sim.state_grids[-1])
+grid_data = dict_to_grid(sim.state_grid)
 im = ax.imshow(grid_data, origin='lower', cmap=cmap,
                vmin=0, vmax=len(colors)-1)
 
@@ -101,7 +101,7 @@ update_queue = queue.Queue()
 def reset_simulation():
     sim.reset()
     sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
-    data = dict_to_grid(sim.state_grids[-1])
+    data = dict_to_grid(sim.state_grid)
     im.set_data(data)
     h, w = data.shape
     im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
@@ -129,7 +129,7 @@ def run_iterations():
 def sim_worker(n):
     for _ in range(n):
         sim.step()
-        update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
+        update_queue.put((sim.state_grid, sim.toxicity_grid))
     root.after(0, on_simulation_finished)
 
 
@@ -259,8 +259,8 @@ def switch_view():
     view = "CA" if view == "Toxins" else "Toxins"
     button_switch_view.config(text="Show CA" if view ==
                               "Toxins" else "Show toxins")
-    if sim.state_grids and sim.toxicity_grids:
-        update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
+    if sim.state_grid and sim.toxicity_grid:
+        update_queue.put((sim.state_grid, sim.toxicity_grid))
 
 
 button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)

@@ -6,8 +6,8 @@ from config import (
 class CA:
     def __init__(self, n: int):
         self.n: int = n
-        self.state_grids: list[dict[tuple[int, int], int]] = [{}]
-        self.toxicity_grids: list[dict[tuple[int, int], float]] = [{}]
+        self.state_grid: dict[tuple[int, int], int] = {}
+        self.toxicity_grid: dict[tuple[int, int], float] = {}
         self.time = 0
 
     def get_grid_representation(
@@ -18,7 +18,7 @@ class CA:
         max_y: int | None = None,
         show_toxins: bool = False
     ):
-        current_state = self.state_grids[-1]
+        current_state = self.state_grid
 
         # Calculate dynamic bounds
         if not current_state:
@@ -43,18 +43,18 @@ class CA:
             for x in range(min_x, max_x):
                 if show_toxins:
                     message += str(round(
-                        self.toxicity_grids[-1].get((y, x), 0.0), 1
+                        self.toxicity_grid.get((y, x), 0.0), 1
                     )) + " "
                 else:
                     message += str(
-                        self.state_grids[-1].get((y, x), EMPTY)
+                        self.state_grid.get((y, x), EMPTY)
                     ) + " "
             message += "\n"
         return message
 
     def step(self):
         new_state_grid = {}
-        current_state = self.state_grids[-1]
+        current_state = self.state_grid
 
         # Determine relevant coordinates
         coords_to_check = set(current_state.keys())
@@ -68,18 +68,18 @@ class CA:
             if new_state != EMPTY:
                 new_state_grid[(y, x)] = new_state
 
-        self.state_grids.append(new_state_grid)
+        self.state_grid = new_state_grid
 
         toxicity_grid = self.toxin_transition()
-        self.toxicity_grids.append(toxicity_grid)
+        self.toxicity_grid = toxicity_grid
         self.time += 1
 
     def reset(self):
-        self.state_grids = [{}]
-        self.toxicity_grids = [{}]
+        self.state_grid = {}
+        self.toxicity_grid = {}
         self.time = 0
 
-    def set_state(self, x: int, y: int, state: int, time: int = 0):
+    def set_state(self, x: int, y: int, state: int):
         """
         Set the state of a single cell value
 
@@ -92,12 +92,12 @@ class CA:
         :type state: int
         """
         if state == EMPTY:
-            if (y, x) in self.state_grids[time]:
-                del self.state_grids[time][(y, x)]
+            if (y, x) in self.state_grid:
+                del self.state_grid[(y, x)]
         else:
-            self.state_grids[time][(y, x)] = state
+            self.state_grid[(y, x)] = state
 
-    def set_toxicity(self, x: int, y: int, toxicity: float, time: int = 0):
+    def set_toxicity(self, x: int, y: int, toxicity: float):
         """
         Set the toxicity of a single cell value
 
@@ -110,10 +110,10 @@ class CA:
         :type toxicity: float
         """
         if toxicity <= 0:
-            if (y, x) in self.toxicity_grids[time]:
-                del self.toxicity_grids[time][(y, x)]
+            if (y, x) in self.toxicity_grid:
+                del self.toxicity_grid[(y, x)]
         else:
-            self.toxicity_grids[time][(y, x)] = toxicity
+            self.toxicity_grid[(y, x)] = toxicity
 
     def state_transition(self, x, y) -> int:
         raise NotImplementedError
