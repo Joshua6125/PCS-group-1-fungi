@@ -25,5 +25,5 @@ uv sync --upgrade
 source .venv/bin/activate
 ```
 
-== References
+## References
 Miller, S. L., & Gongloff, A. (2023). Size, age, and insights into establishment, dynamics and persistence of fairy rings in the Laramie Basin, Wyoming. Fungal Ecology, 65, 101272. https://doi.org/10.1016/j.funeco.2023.101272
