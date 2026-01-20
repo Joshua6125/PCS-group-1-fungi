@@ -165,7 +165,7 @@ def check_queue():
             colorbar.ax.set_visible(True)
 
         im.set_data(grid)
-        h, w = grid.shape
+        h, w = dict_to_grid(state_data).shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
