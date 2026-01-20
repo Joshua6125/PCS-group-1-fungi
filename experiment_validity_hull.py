@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from concurrent.futures import ProcessPoolExecutor
-from constants import SPORE
+from config import SPORE
 from transitions import BasicToxinSim
 from utils import gkern
 

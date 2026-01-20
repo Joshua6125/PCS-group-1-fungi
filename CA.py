@@ -1,5 +1,5 @@
 from config import (
-    EMPTY, MOORE_NBD
+    EMPTY, MOORE_NBD, MUSHROOMS, OLDER
 )
 
 class Point():
