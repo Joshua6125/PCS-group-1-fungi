@@ -154,7 +154,6 @@ def check_queue():
             grid = dict_to_grid(state_data)
             im.set_cmap(cmap)
             im.set_clim(0, len(colors) - 1)
-
             legend.set_visible(True)
             colorbar.ax.set_visible(False)
         else:
@@ -165,10 +164,13 @@ def check_queue():
             colorbar.ax.set_visible(True)
 
         im.set_data(grid)
+
+        # Make representation the size of state grid regardless
         h, w = dict_to_grid(state_data).shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
+
         canvas.draw()
 
     check_queue_id = root.after(20, check_queue)
