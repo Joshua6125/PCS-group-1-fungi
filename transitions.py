@@ -357,8 +357,6 @@ class ProbToxinDeathSim(CA):
             for (dx, dy) in MOORE_NBD:
                 if not state_grid.get((y + dy, x + dx), EMPTY) == YOUNG:
                     continue
-                if np.random.random() < toxicity_grid.get((y, x), 0.0):
-                    continue
                 if np.random.random() <\
                         self.prob_spread / np.linalg.norm((dx, dy)):
                     return YOUNG
