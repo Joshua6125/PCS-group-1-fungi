@@ -2,52 +2,9 @@ from config import (
     EMPTY, MOORE_NBD, MUSHROOMS, OLDER
 )
 
-class Point():
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+from utils import Point, convex_hull
 
-    def __sub__(self, other):
-        return Point(self.x - other.x, self.y - other.y)
-
-    def norm(self):
-        return (self.x**2 + self.y**2)**(0.5)
-
-    def __repr__(self):
-        return f"{self.x} {self.y}"
-
-    def dist(self, other):
-        return abs(self.x - other.x) + abs(self.y - other.y)
-
-def on_the_left_or_line(p1, p2, p3):
-    b1 = p2 - p1
-    b2 = p3 - p2
-    val = b1.x*b2.y - b1.y*b2.x
-    return val >= 0
-
-def convex_hull(points):
-    points.sort(key=lambda p: (p.x, p.y))
-    upper_hull = []
-    for i in range(len(points)):
-        upper_hull.append(points[i])
-        while len(upper_hull) > 2:
-            if on_the_left_or_line(upper_hull[-3], upper_hull[-2], upper_hull[-1]):
-                upper_hull.pop(-2)
-                continue
-            break
-    lower_hull = []
-    for i in range(len(points) - 1, -1, -1):
-        lower_hull.append(points[i])
-        while len(lower_hull) > 2:
-            if on_the_left_or_line(lower_hull[-3], lower_hull[-2], lower_hull[-1]):
-                lower_hull.pop(-2)
-                continue
-            break
-    if lower_hull:
-        lower_hull.pop(0)
-    if lower_hull:
-        lower_hull.pop(-1)
-    return upper_hull + lower_hull
+from itertools import product
 
 
 class CA:
@@ -169,27 +126,15 @@ class CA:
         raise NotImplementedError
 
     def inner_ring_detector(self):
-        state_grid = self.state_grids[-1]
+        state_grid = self.state_grid
         mushroom_and_older_coordinates = []
-        for (x, y) in product(range(self.n), repeat=2):
-            if state_grid[y, x] == MUSHROOMS or state_grid[y, x] == OLDER:
+        for (y, x) in state_grid.keys():
+            if state_grid[(y, x)] == MUSHROOMS or state_grid[(y, x)] == OLDER:
                 mushroom_and_older_coordinates.append(Point(x, y))
 
         if not mushroom_and_older_coordinates:
             return 0
-        hull = convex_hull(mushroom_and_older_coordinates)
-        perimiter_hull = 0
-        for i in range(1, len(hull)):
-            perimiter_hull += (hull[i] - hull[i - 1]).norm()
-
-        ring_count = 0
-        for fungus in mushroom_and_older_coordinates:
-            min_dist = 5
-            for point in hull:
-                if fungus.dist(point) < min_dist:
-                    min_dist = fungus.dist(point)
-            if min_dist <= 3:
-                ring_count += 1
+        
+        return convex_hull(mushroom_and_older_coordinates)
 
 
-        return ring_count/len(mushroom_and_older_coordinates)

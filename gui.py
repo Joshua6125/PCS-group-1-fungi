@@ -169,6 +169,10 @@ def check_queue():
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
+        ratio, hull = sim.inner_ring_detector()
+        hull_x = [point.x for point in hull]
+        hull_y = [point.y for point in hull]
+        inner_ring_detector.config(text=f"outer hull ratio: {round(ratio, 2)}")
         canvas.draw()
 
     check_queue_id = root.after(20, check_queue)
@@ -253,6 +257,8 @@ slider_frame.pack(side=tkinter.BOTTOM, fill=tkinter.X)
 
 view = "CA"
 
+inner_ring_detector = tkinter.Label(root, text=f"Relative size outer rings: {1}")
+inner_ring_detector.pack(side=tkinter.BOTTOM)
 
 def switch_view():
     global view

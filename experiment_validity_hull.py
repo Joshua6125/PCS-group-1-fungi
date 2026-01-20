@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from concurrent.futures import ProcessPoolExecutor
-from config import SPORE
+from config import SPORE, sim_parameters
 from transitions import BasicToxinSim
 from utils import gkern
 
@@ -16,17 +16,6 @@ def run_single_simulation(rate, params):
     return simulation.inner_ring_detector()
 
 def main():
-    sim_parameters = {
-        "n": 150,
-        "prob_spore_to_hyphae": 1.0,
-        "prob_mushroom": 0.7,
-        "prob_spread": 0.5,
-        "toxin_threshold": 0.3,
-        "toxin_decay": 0.5,
-        "toxin_convolution": gkern(5, 1, 1),
-        "iterations": 50
-    }
-
     decay_rates = np.linspace(0, 0.1, 25)
     num_simulations = 60
 
