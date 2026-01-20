@@ -12,7 +12,7 @@ def run_single_simulation(rate, params):
 
     for _ in range(params["iterations"]):
         simulation.step()
-    
+
     return simulation.inner_ring_detector()
 
 def main():
@@ -28,8 +28,8 @@ def main():
     }
 
     decay_rates = np.linspace(0, 0.1, 25)
-    num_simulations = 20
-    
+    num_simulations = 60
+
     val_per_rate = []
     val_per_rate_lower = []
     val_per_rate_upper = []
@@ -37,10 +37,10 @@ def main():
     with ProcessPoolExecutor() as executor:
         for rate in decay_rates:
             print(f"Processing decay rate: {rate}")
-            
-            futures = [executor.submit(run_single_simulation, rate, sim_parameters) 
+
+            futures = [executor.submit(run_single_simulation, rate, sim_parameters)
                        for _ in range(num_simulations)]
-            
+
             vals = [f.result() for f in futures]
 
             mean_val = np.mean(vals)
@@ -55,7 +55,7 @@ def main():
     plt.xlabel("Decay Rate")
     plt.ylabel("Size Convex Hull divided by Total")
     plt.legend()
-    plt.savefig("./plots/results_boxes_test.png")
+    plt.savefig("./results_distance_test.png")
     plt.show()
 
 if __name__ == "__main__":
