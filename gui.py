@@ -21,7 +21,7 @@ sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
 
 def dict_to_grid(state_dict):
-    """Convert sparse dictionary state into a dense grid for plotting, 
+    """Convert sparse dictionary state into a dense grid for plotting,
     expanding bounds."""
     if not state_dict:
         # Default small grid
@@ -109,6 +109,10 @@ def reset_simulation():
     ax.set_ylim(-0.5, h-0.5)
     canvas.draw()
 
+    global view
+    if view == "Toxins":
+        switch_view()
+
 
 def on_simulation_finished():
     run_for_button.config(state="normal")
@@ -161,7 +165,7 @@ def check_queue():
             colorbar.ax.set_visible(True)
 
         im.set_data(grid)
-        h, w = grid.shape
+        h, w = dict_to_grid(state_data).shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
@@ -257,6 +261,9 @@ def switch_view():
                               "Toxins" else "Show toxins")
     if sim.state_grids and sim.toxicity_grids:
         update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
+
+
+button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)
 
 
 button_switch_view = tkinter.Button(
