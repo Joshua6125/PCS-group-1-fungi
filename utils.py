@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import matplotlib.pyplot as plt
 
 
 def gkern(l, sig, multi):
@@ -28,22 +29,38 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
         points = []
 
         reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            points.append((row[1], row[3]))
+        for i, (n, d, g, a, y) in enumerate(reader):
+            if not i: continue
+            if n == "A. argenteus" or n == "Geastrum sp.": continue
+            diameter = int(d)
+            age = int(a)
+            points.append((diameter, age))
 
     points = np.array(points)
 
+    print(points.T)
+
     # Add bias term to x-values
-    X_b = np.c_[np.ones((100, 1)), points.T[0]]
+    X_b = np.c_[np.ones((len(points), 1)), points.T[0]]
 
     Y_val = points.T[1]
 
     # Minimize the sum of squared residuals
     res = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(Y_val)
 
-    slope = res[1][0]
-    intercept = res[0][0]
+    print(res)
 
-    print("slope:", slope, "intercept:", res[0][0])
+    slope = res[1]
+    intercept = res[0]
 
-    return intercept, slope
+    print("slope:", slope, "intercept:", intercept)
+
+    return intercept, slope, points.T
+
+
+# i, s, p = linear_regression()
+
+# t = np.linspace(0, max(p[0]), 1000)
+# plt.scatter(*p)
+# plt.plot(t, [i + s*k for k in t])
+# plt.show()
