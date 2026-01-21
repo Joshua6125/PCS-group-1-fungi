@@ -1,6 +1,8 @@
 from config import (
-    EMPTY, MOORE_NBD
+    EMPTY, MOORE_NBD, MUSHROOMS, OLDER
 )
+
+from utils import Point, convex_hull
 
 
 class CA:
@@ -120,3 +122,17 @@ class CA:
 
     def toxin_transition(self) -> dict:
         raise NotImplementedError
+
+    def inner_ring_detector(self) -> tuple | None:
+        state_grid = self.state_grid
+        mushroom_and_older_coordinates = []
+        for (y, x) in state_grid.keys():
+            if state_grid[(y, x)] == MUSHROOMS or state_grid[(y, x)] == OLDER:
+                mushroom_and_older_coordinates.append(Point(x, y))
+
+        if not mushroom_and_older_coordinates:
+            return None
+
+        return convex_hull(mushroom_and_older_coordinates)
+
+
