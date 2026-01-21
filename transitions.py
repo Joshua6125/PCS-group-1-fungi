@@ -19,7 +19,7 @@ class BasicSim(CA):
         self.prob_spread: float = parameters["prob_spread"]
 
     def state_transition(self, x: int, y: int) -> int:
-        state_grid = self.state_grids[-1]
+        state_grid = self.state_grid
         state = state_grid.get((y, x), EMPTY)
 
         if state == SPORE:
@@ -87,8 +87,8 @@ class BasicToxinSim(CA):
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
     def state_transition(self, x: int, y: int) -> int:
-        state_grid = self.state_grids[-1]
-        toxicity_grid = self.toxicity_grids[-1]
+        state_grid = self.state_grid
+        toxicity_grid = self.toxicity_grid
 
         state = state_grid.get((y, x), EMPTY)
 
@@ -137,8 +137,8 @@ class BasicToxinSim(CA):
         raise ValueError
 
     def toxin_transition(self) -> dict:
-        state_grid = self.state_grids[-1]
-        toxicity_grid = self.toxicity_grids[-1]
+        state_grid = self.state_grid
+        toxicity_grid = self.toxicity_grid
 
         source_grid = {}
 
@@ -200,8 +200,8 @@ class ProbToxinSim(CA):
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
     def state_transition(self, x: int, y: int) -> int:
-        state_grid = self.state_grids[-1]
-        toxicity_grid = self.toxicity_grids[-1]
+        state_grid = self.state_grid
+        toxicity_grid = self.toxicity_grid
 
         state = state_grid.get((y, x), EMPTY)
 
@@ -249,8 +249,8 @@ class ProbToxinSim(CA):
         raise ValueError
 
     def toxin_transition(self) -> dict:
-        state_grid = self.state_grids[-1]
-        toxicity_grid = self.toxicity_grids[-1]
+        state_grid = self.state_grid
+        toxicity_grid = self.toxicity_grid
 
         source_grid = {}
 
@@ -310,8 +310,8 @@ class ProbToxinDeathSim(CA):
         self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
 
     def state_transition(self, x: int, y: int) -> int:
-        state_grid = self.state_grids[-1]
-        toxicity_grid = self.toxicity_grids[-1]
+        state_grid = self.state_grid
+        toxicity_grid = self.toxicity_grid
 
         state = state_grid.get((y, x), EMPTY)
 
@@ -368,8 +368,8 @@ class ProbToxinDeathSim(CA):
         raise ValueError
 
     def toxin_transition(self) -> dict:
-        state_grid = self.state_grids[-1]
-        toxicity_grid = self.toxicity_grids[-1]
+        state_grid = self.state_grid
+        toxicity_grid = self.toxicity_grid
 
         source_grid = {}
 

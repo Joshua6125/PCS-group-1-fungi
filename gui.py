@@ -1,6 +1,7 @@
 import tkinter
 import numpy as np
 
+from utils import gkern
 from config import SPORE, sim_parameters, colors, state_names
 
 import threading
@@ -55,7 +56,7 @@ root.wm_title("FFR simulation")
 
 cmap = ListedColormap(colors)
 fig, ax = plt.subplots()
-grid_data = dict_to_grid(sim.state_grids[-1])
+grid_data = dict_to_grid(sim.state_grid)
 im = ax.imshow(grid_data, origin='lower', cmap=cmap,
                vmin=0, vmax=len(colors)-1)
 
@@ -102,7 +103,7 @@ update_queue = queue.Queue()
 def reset_simulation():
     sim.reset()
     sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
-    data = dict_to_grid(sim.state_grids[-1])
+    data = dict_to_grid(sim.state_grid)
     im.set_data(data)
     h, w = data.shape
     im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
@@ -132,7 +133,7 @@ def run_iterations():
 def sim_worker(n):
     for _ in range(n):
         sim.step()
-        update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
+        update_queue.put((sim.state_grid, sim.toxicity_grid))
     root.after(0, on_simulation_finished)
 
 
@@ -264,12 +265,50 @@ slider_toxin_decay = tkinter.Scale(slider_frame, from_=0, to=0.1, digits=3,
                                    label="Toxin decay")
 slider_toxin_decay.set(sim_parameters["toxin_decay"])
 
+# Kernel size variables
+current_kernel_size = 5
+current_kernel_sigma = 1.0
+
+
+def update_kernel():
+    sim_parameters["toxin_convolution"] = gkern(
+        current_kernel_size, current_kernel_sigma, 1)
+    sim.change_parameters(sim_parameters)
+
+
+def update_kernel_size(new_val):
+    global current_kernel_size
+    current_kernel_size = int(new_val)
+    update_kernel()
+
+
+def update_kernel_sigma(new_val):
+    global current_kernel_sigma
+    current_kernel_sigma = float(new_val)
+    update_kernel()
+
+# Kernel size sliders
+slider_kernel_size = tkinter.Scale(slider_frame, from_=1, to=10, resolution=2,
+                                   orient=tkinter.HORIZONTAL,
+                                   command=update_kernel_size,
+                                   label="Kernel size")
+slider_kernel_size.set(current_kernel_size)
+
+# Kernel sigma sliders
+slider_kernel_sigma = tkinter.Scale(slider_frame, from_=0.1, to=5.0,
+                                    resolution=0.1, orient=tkinter.HORIZONTAL,
+                                    command=update_kernel_sigma,
+                                    label="Kernel variance (sigma)")
+slider_kernel_sigma.set(current_kernel_sigma)
+
 
 slider_prob_spore_to_hyphae.grid(
     in_=slider_frame, row=0, column=0, padx=5, pady=5)
 slider_prob_spread.grid(in_=slider_frame, row=0, column=1, padx=5, pady=5)
 slider_toxin_decay.grid(in_=slider_frame, row=1, column=0, padx=5, pady=5)
 slider_toxin_threshold.grid(in_=slider_frame, row=1, column=1, padx=5, pady=5)
+slider_kernel_size.grid(in_=slider_frame, row=2, column=0, padx=5, pady=5)
+slider_kernel_sigma.grid(in_=slider_frame, row=2, column=1, padx=5, pady=5)
 
 
 button_quit.pack(side=tkinter.BOTTOM)
@@ -286,8 +325,8 @@ def switch_view():
     view = "CA" if view == "Toxins" else "Toxins"
     button_switch_view.config(text="Show CA" if view ==
                               "Toxins" else "Show toxins")
-    if sim.state_grids and sim.toxicity_grids:
-        update_queue.put((sim.state_grids[-1], sim.toxicity_grids[-1]))
+    if sim.state_grid and sim.toxicity_grid:
+        update_queue.put((sim.state_grid, sim.toxicity_grid))
 
 
 button_switch_view = tkinter.Button(root, text="Show toxins", command=switch_view)
