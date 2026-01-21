@@ -55,7 +55,7 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
 
     print("slope:", slope, "intercept:", intercept)
 
-    return intercept, slope, points.T
+    return intercept, slope
 
 
 # i, s, p = linear_regression()
