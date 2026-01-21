@@ -7,7 +7,7 @@ from config import SPORE, sim_parameters, colors, state_names
 import threading
 import queue
 
-from transitions import ProbToxinSim
+from transitions import BasicSim, BasicToxinSim, ProbToxinSim, ProbToxinDeathSim
 
 # Implement the default Matplotlib key bindings.
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -62,8 +62,8 @@ im = ax.imshow(grid_data, origin='lower', cmap=cmap,
 
 patches = [mpatches.Patch(color=col, label=lab)
            for col, lab in zip(colors, state_names)]
-legend = ax.legend(handles=patches, bbox_to_anchor=(
-    1.05, 1), loc=2, borderaxespad=0.)
+legend = ax.legend(handles=patches, bbox_to_anchor=(1.05, 1),
+                   loc=2, borderaxespad=0.)
 colorbar = plt.colorbar(im, label="Toxicity value")
 colorbar.ax.set_visible(False)
 
@@ -90,6 +90,7 @@ sim_control_frame = tkinter.Frame(root)
 sim_control_frame.columnconfigure(0, weight=1)
 sim_control_frame.columnconfigure(1, weight=1)
 sim_control_frame.columnconfigure(2, weight=1)
+sim_control_frame.columnconfigure(3, weight=1)
 iter_amount_var = tkinter.StringVar(sim_control_frame)
 iter_amount_var.set("10")
 iter_amount_spinbox = tkinter.Spinbox(
@@ -118,11 +119,13 @@ def reset_simulation():
 def on_simulation_finished():
     run_for_button.config(state="normal")
     button_reset.config(state="normal")
+    ca_type_menu.config(state="normal")
 
 
 def run_iterations():
     run_for_button.config(state="disabled")
     button_reset.config(state="disabled")
+    ca_type_menu.config(state="disabled")
     n = int(iter_amount_var.get())
     threading.Thread(target=sim_worker, args=(n,), daemon=True).start()
 
@@ -155,7 +158,6 @@ def check_queue():
             grid = dict_to_grid(state_data)
             im.set_cmap(cmap)
             im.set_clim(0, len(colors) - 1)
-
             legend.set_visible(True)
             colorbar.ax.set_visible(False)
         else:
@@ -166,6 +168,8 @@ def check_queue():
             colorbar.ax.set_visible(True)
 
         im.set_data(grid)
+
+        # Make representation the size of state grid regardless
         h, w = dict_to_grid(state_data).shape
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
@@ -190,6 +194,28 @@ run_for_button.grid(in_=sim_control_frame, row=0, column=1)
 button_reset = tkinter.Button(
     sim_control_frame, text="Reset", command=reset_simulation)
 button_reset.grid(in_=sim_control_frame, row=0, column=2)
+
+# Dropdown for selecting CA type
+CA_TYPES = {
+    "BasicSim": BasicSim,
+    "BasicToxinSim": BasicToxinSim,
+    "ProbToxinSim": ProbToxinSim,
+    "ProbToxinDeathSim": ProbToxinDeathSim
+}
+
+selected_ca_type = tkinter.StringVar(root)
+selected_ca_type.set("ProbToxinSim")
+
+
+def change_ca_type(new_val):
+    global sim
+    sim = CA_TYPES[new_val](sim_parameters)
+    reset_simulation()
+
+
+ca_type_menu = tkinter.OptionMenu(
+    sim_control_frame, selected_ca_type, *CA_TYPES.keys(), command=change_ca_type)
+ca_type_menu.grid(in_=sim_control_frame, row=0, column=3)
 
 
 slider_frame = tkinter.Frame(root)
