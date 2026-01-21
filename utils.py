@@ -20,16 +20,16 @@ class Point():
     def __sub__(self, other):
         return Point(self.x - other.x, self.y - other.y)
 
-    def norm(self):
+    def norm(self) -> float:
         return (self.x**2 + self.y**2)**(0.5)
 
     def __repr__(self):
         return f"{self.x} {self.y}"
 
-    def dist(self, other):
+    def dist(self, other) -> float:
         return abs(self.x - other.x) + abs(self.y - other.y)
 
-def on_the_left_or_line(p1, p2, p3):
+def on_the_left_or_line(p1: Point, p2: Point, p3: Point) -> bool:
     b1 = p2 - p1
     b2 = p3 - p2
     val = b1.x*b2.y - b1.y*b2.x
