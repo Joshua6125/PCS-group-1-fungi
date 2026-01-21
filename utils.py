@@ -2,7 +2,7 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 
-import matplotlib.pyplot as plt
+from config import EVALUATED_FUNGI_DATASET
 
 
 def gkern(l: int, sig: float, multi: float) -> np.ndarray:
@@ -32,15 +32,17 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
 
         reader = csv.reader(f, delimiter=',')
         for i, (n, d, g, a, y) in enumerate(reader):
+            # Not interested in column names
             if not i: continue
-            if n == "A. argenteus" or n == "Geastrum sp.": continue
+
+            # These types don't fit our dataset, lol
+            if n not in EVALUATED_FUNGI_DATASET: continue
+
             diameter = int(d)
             age = int(a)
             points.append((diameter, age))
 
     points = np.array(points)
-
-    print(points.T)
 
     # Add bias term to x-values
     X_b = np.c_[np.ones((len(points), 1)), points.T[0]]
@@ -50,22 +52,18 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
     # Minimize the sum of squared residuals
     res = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(Y_val)
 
-    print(res)
-
     slope = res[1]
     intercept = res[0]
 
-    print("slope:", slope, "intercept:", intercept)
-
-    return intercept, slope
+    return intercept, slope, points.T
 
 
-# i, s, p = linear_regression()
+i, s, p = linear_regression()
 
-# t = np.linspace(0, max(p[0]), 1000)
-# plt.scatter(*p)
-# plt.plot(t, [i + s*k for k in t])
-# plt.show()
+t = np.linspace(0, max(p[0]), 1000)
+plt.scatter(*p)
+plt.plot(t, [i + s*k for k in t])
+plt.show()
 
 
 class Point():
