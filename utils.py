@@ -60,31 +60,7 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
     # Residuals
     residuals = Y_val - Y_hat
 
-    # Residual variance estimate
-    sigma2_hat = (residuals @ residuals) / (len(points) - 2)
-
-    # Covariance matrix of coefficients
-    cov_beta = sigma2_hat * np.linalg.inv(X_b.T @ X_b)
-
-    # Standard errors
-    se_intercept = np.sqrt(cov_beta[0, 0])
-    se_slope = np.sqrt(cov_beta[1, 1])
-
-    # Critical value 95%
-    alpha = 0.05
-    t_crit = stats.t.ppf(1 - alpha/2, df=len(points) - 2)
-
-    # Confidence Intervals
-    intercept_ci = (
-        intercept - t_crit * se_intercept,
-        intercept + t_crit * se_intercept
-    )
-    slope_ci = (
-        slope - t_crit * se_slope,
-        slope + t_crit * se_slope
-    )
-
-    return intercept, slope, intercept_ci, slope_ci
+    return intercept, slope
 
 
 class Point():
@@ -147,3 +123,13 @@ def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
             ring_count += 1
 
     return ring_count/len(points), hull
+
+def area_polygon(points: list[Point]) -> float:
+    n = len(points)
+
+    area = 0
+    for i in range(n):
+        area += points[i].x * points[(i + 1)%n].y
+        area -= points[i].y * points[(i + 1)%n].x
+
+    return area/2
