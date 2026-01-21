@@ -1,7 +1,6 @@
 import tkinter
 import numpy as np
 
-from utils import gkern
 from config import SPORE, sim_parameters, colors, state_names
 
 import threading
