@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def gkern(l, sig, multi):
+def gkern(l: int, sig: float, multi: float) -> np.ndarray:
     """
     creates gaussian kernel with side length `l` and a sigma of `sig`
     """
@@ -35,9 +35,9 @@ def on_the_left_or_line(p1, p2, p3):
     val = b1.x*b2.y - b1.y*b2.x
     return val > 0
 
-def convex_hull(points):
+def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
     points.sort(key=lambda p: (p.x, p.y))
-    upper_hull = []
+    upper_hull: list[Point] = []
     for i in range(len(points)):
         upper_hull.append(points[i])
         while len(upper_hull) > 2:
@@ -45,7 +45,7 @@ def convex_hull(points):
                 upper_hull.pop(-2)
                 continue
             break
-    lower_hull = []
+    lower_hull: list[Point] = []
     for i in range(len(points) - 1, -1, -1):
         lower_hull.append(points[i])
         while len(lower_hull) > 2:
