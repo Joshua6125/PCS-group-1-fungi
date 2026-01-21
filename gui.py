@@ -277,22 +277,14 @@ current_kernel_size = 5
 current_kernel_sigma = 1.0
 
 
-def update_kernel():
-    sim_parameters["toxin_convolution"] = gkern(
-        current_kernel_size, current_kernel_sigma, 1)
+def update_kernel_size(new_val):
+    sim_parameters["toxin_convolution_size"] = int(new_val)
     sim.change_parameters(sim_parameters)
 
 
-def update_kernel_size(new_val):
-    global current_kernel_size
-    current_kernel_size = int(new_val)
-    update_kernel()
-
-
 def update_kernel_sigma(new_val):
-    global current_kernel_sigma
-    current_kernel_sigma = float(new_val)
-    update_kernel()
+    sim_parameters["toxin_convolution_variance"] = float(new_val.replace(',', '.'))
+    sim.change_parameters(sim_parameters)
 
 # Kernel size sliders
 slider_kernel_size = tkinter.Scale(slider_frame, from_=1, to=10, resolution=2,

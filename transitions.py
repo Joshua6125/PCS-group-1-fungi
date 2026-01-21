@@ -3,6 +3,7 @@ from config import (
     EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
     INERT, MOORE_NBD, TOXIN_RELEASING_STATES
 )
+from utils import gkern
 import numpy as np
 
 
@@ -76,7 +77,8 @@ class BasicToxinSim(CA):
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_threshold: float = parameters["toxin_threshold"]
         self.toxin_decay: float = parameters["toxin_decay"]
-        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+        self.toxin_convolution_size: int = parameters["toxin_convolution_size"]
+        self.toxin_convolution_variance: float = parameters["toxin_convolution_variance"]
 
     def change_parameters(self, parameters):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
@@ -84,7 +86,8 @@ class BasicToxinSim(CA):
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_threshold: float = parameters["toxin_threshold"]
         self.toxin_decay: float = parameters["toxin_decay"]
-        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+        self.toxin_convolution_size: int = parameters["toxin_convolution_size"]
+        self.toxin_convolution_variance: float = parameters["toxin_convolution_variance"]
 
     def state_transition(self, x: int, y: int) -> int:
         state_grid = self.state_grid
@@ -159,7 +162,7 @@ class BasicToxinSim(CA):
 
         # Sparse convolution
         new_toxicity_grid = {}
-        kernel = self.toxin_convolution
+        kernel = gkern(self.toxin_convolution_size, self.toxin_convolution_variance)
         ky, kx = kernel.shape
         cy, cx = ky // 2, kx // 2
 
@@ -190,14 +193,16 @@ class ProbToxinSim(CA):
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_decay: float = parameters["toxin_decay"]
-        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+        self.toxin_convolution_size: int = parameters["toxin_convolution_size"]
+        self.toxin_convolution_variance: float = parameters["toxin_convolution_variance"]
 
     def change_parameters(self, parameters):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_decay: float = parameters["toxin_decay"]
-        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+        self.toxin_convolution_size: int = parameters["toxin_convolution_size"]
+        self.toxin_convolution_variance: float = parameters["toxin_convolution_variance"]
 
     def state_transition(self, x: int, y: int) -> int:
         state_grid = self.state_grid
@@ -271,7 +276,7 @@ class ProbToxinSim(CA):
 
         # Sparse convolution
         new_toxicity_grid = {}
-        kernel = self.toxin_convolution
+        kernel = gkern(self.toxin_convolution_size, self.toxin_convolution_variance)
         ky, kx = kernel.shape
         cy, cx = ky // 2, kx // 2
 
@@ -300,14 +305,16 @@ class ProbToxinDeathSim(CA):
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_decay: float = parameters["toxin_decay"]
-        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+        self.toxin_convolution_size: int = parameters["toxin_convolution_size"]
+        self.toxin_convolution_variance: float = parameters["toxin_convolution_variance"]
 
     def change_parameters(self, parameters):
         self.prob_spore_to_hyphae: float = parameters["prob_spore_to_hyphae"]
         self.prob_mushroom: float = parameters["prob_mushroom"]
         self.prob_spread: float = parameters["prob_spread"]
         self.toxin_decay: float = parameters["toxin_decay"]
-        self.toxin_convolution: np.ndarray = parameters["toxin_convolution"]
+        self.toxin_convolution_size: int = parameters["toxin_convolution_size"]
+        self.toxin_convolution_variance: float = parameters["toxin_convolution_variance"]
 
     def state_transition(self, x: int, y: int) -> int:
         state_grid = self.state_grid
@@ -390,7 +397,7 @@ class ProbToxinDeathSim(CA):
 
         # Sparse convolution
         new_toxicity_grid = {}
-        kernel = self.toxin_convolution
+        kernel = gkern(self.toxin_convolution_size, self.toxin_convolution_variance)
         ky, kx = kernel.shape
         cy, cx = ky // 2, kx // 2
 
