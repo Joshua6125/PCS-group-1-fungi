@@ -23,6 +23,11 @@ MOORE_NBD = [
 
 TOXIN_RELEASING_STATES = [MATURING, OLDER, DECAYING]
 
+EVALUATED_FUNGI_DATASET = [
+    "Agaricus aff. lilaceps", "Bovista plumbea", "Calvatia spp",
+    "Disciseda candida", "Marasmius oreades"
+]
+
 # ----- VARIABLES -----
 sim_parameters = {
     "n": 75,
