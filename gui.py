@@ -17,6 +17,15 @@ from matplotlib.colors import ListedColormap
 import matplotlib.patches as mpatches
 
 
+# Dropdown for selecting CA type
+CA_TYPES = {
+    "BasicSim": BasicSim,
+    "BasicToxinSim": BasicToxinSim,
+    "ProbToxinSim": ProbToxinSim,
+    "ProbToxinDeathSim": ProbToxinDeathSim
+}
+
+
 sim = ProbToxinSim(sim_parameters)
 sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
 
@@ -195,13 +204,6 @@ button_reset = tkinter.Button(
     sim_control_frame, text="Reset", command=reset_simulation)
 button_reset.grid(in_=sim_control_frame, row=0, column=2)
 
-# Dropdown for selecting CA type
-CA_TYPES = {
-    "BasicSim": BasicSim,
-    "BasicToxinSim": BasicToxinSim,
-    "ProbToxinSim": ProbToxinSim,
-    "ProbToxinDeathSim": ProbToxinDeathSim
-}
 
 selected_ca_type = tkinter.StringVar(root)
 selected_ca_type.set("ProbToxinSim")
