@@ -89,6 +89,7 @@ sim_control_frame = tkinter.Frame(root)
 sim_control_frame.columnconfigure(0, weight=1)
 sim_control_frame.columnconfigure(1, weight=1)
 sim_control_frame.columnconfigure(2, weight=1)
+sim_control_frame.columnconfigure(3, weight=1)
 iter_amount_var = tkinter.StringVar(sim_control_frame)
 iter_amount_var.set("10")
 iter_amount_spinbox = tkinter.Spinbox(
@@ -117,11 +118,13 @@ def reset_simulation():
 def on_simulation_finished():
     run_for_button.config(state="normal")
     button_reset.config(state="normal")
+    ca_type_menu.config(state="normal")
 
 
 def run_iterations():
     run_for_button.config(state="disabled")
     button_reset.config(state="disabled")
+    ca_type_menu.config(state="disabled")
     n = int(iter_amount_var.get())
     threading.Thread(target=sim_worker, args=(n,), daemon=True).start()
 
@@ -183,6 +186,28 @@ run_for_button.grid(in_=sim_control_frame, row=0, column=1)
 button_reset = tkinter.Button(
     sim_control_frame, text="Reset", command=reset_simulation)
 button_reset.grid(in_=sim_control_frame, row=0, column=2)
+
+# Dropdown for selecting CA type
+CA_TYPES = {
+    "BasicSim": BasicSim,
+    "BasicToxinSim": BasicToxinSim,
+    "ProbToxinSim": ProbToxinSim,
+    "ProbToxinDeathSim": ProbToxinDeathSim
+}
+
+selected_ca_type = tkinter.StringVar(root)
+selected_ca_type.set("ProbToxinSim")
+
+
+def change_ca_type(new_val):
+    global sim
+    sim = CA_TYPES[new_val](sim_parameters)
+    reset_simulation()
+
+
+ca_type_menu = tkinter.OptionMenu(
+    sim_control_frame, selected_ca_type, *CA_TYPES.keys(), command=change_ca_type)
+ca_type_menu.grid(in_=sim_control_frame, row=0, column=3)
 
 
 slider_frame = tkinter.Frame(root)
