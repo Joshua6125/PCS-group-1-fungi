@@ -125,7 +125,7 @@ class CA:
     def toxin_transition(self) -> dict:
         raise NotImplementedError
 
-    def inner_ring_detector(self):
+    def inner_ring_detector(self) -> tuple | None:
         state_grid = self.state_grid
         mushroom_and_older_coordinates = []
         for (y, x) in state_grid.keys():
@@ -133,8 +133,8 @@ class CA:
                 mushroom_and_older_coordinates.append(Point(x, y))
 
         if not mushroom_and_older_coordinates:
-            return 0
-        
+            return None
+
         return convex_hull(mushroom_and_older_coordinates)
 
 

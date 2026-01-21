@@ -170,10 +170,16 @@ def check_queue():
         im.set_extent((-0.5, w-0.5, -0.5, h-0.5))
         ax.set_xlim(-0.5, w-0.5)
         ax.set_ylim(-0.5, h-0.5)
-        ratio, hull = sim.inner_ring_detector()
-        hull_x = [point.x for point in hull]
-        hull_y = [point.y for point in hull]
-        inner_ring_detector.config(text=f"outer hull ratio: {round(ratio, 2)}")
+
+        ring = sim.inner_ring_detector()
+
+        # Only calculate ratio if it exists
+        if ring:
+            ratio, hull = ring
+            hull_x = [point.x for point in hull]
+            hull_y = [point.y for point in hull]
+            inner_ring_detector.config(text=f"outer hull ratio: {round(ratio, 2)}")
+
         canvas.draw()
 
     check_queue_id = root.after(20, check_queue)
