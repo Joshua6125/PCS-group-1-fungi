@@ -1,6 +1,6 @@
 import numpy as np
 import csv
-import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 from config import EVALUATED_FUNGI_DATASET
 
@@ -55,15 +55,36 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
     slope = res[1]
     intercept = res[0]
 
-    return intercept, slope, points.T
+    Y_hat = X_b @ res
 
+    # Residuals
+    residuals = Y_val - Y_hat
 
-i, s, p = linear_regression()
+    # Residual variance estimate
+    sigma2_hat = (residuals @ residuals) / (len(points) - 2)
 
-t = np.linspace(0, max(p[0]), 1000)
-plt.scatter(*p)
-plt.plot(t, [i + s*k for k in t])
-plt.show()
+    # Covariance matrix of coefficients
+    cov_beta = sigma2_hat * np.linalg.inv(X_b.T @ X_b)
+
+    # Standard errors
+    se_intercept = np.sqrt(cov_beta[0, 0])
+    se_slope = np.sqrt(cov_beta[1, 1])
+
+    # Critical value 95%
+    alpha = 0.05
+    t_crit = stats.t.ppf(1 - alpha/2, df=len(points) - 2)
+
+    # Confidence Intervals
+    intercept_ci = (
+        intercept - t_crit * se_intercept,
+        intercept + t_crit * se_intercept
+    )
+    slope_ci = (
+        slope - t_crit * se_slope,
+        slope + t_crit * se_slope
+    )
+
+    return intercept, slope, intercept_ci, slope_ci
 
 
 class Point():
@@ -83,11 +104,13 @@ class Point():
     def dist(self, other) -> float:
         return abs(self.x - other.x) + abs(self.y - other.y)
 
+
 def on_the_left_or_line(p1: Point, p2: Point, p3: Point) -> bool:
     b1 = p2 - p1
     b2 = p3 - p2
     val = b1.x*b2.y - b1.y*b2.x
     return val > 0
+
 
 def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
     points.sort(key=lambda p: (p.x, p.y))
