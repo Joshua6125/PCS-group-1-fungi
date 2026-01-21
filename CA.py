@@ -4,8 +4,6 @@ from config import (
 
 from utils import Point, convex_hull
 
-from itertools import product
-
 
 class CA:
     def __init__(self, n: int):
