@@ -176,8 +176,6 @@ def check_queue():
         # Only calculate ratio if it exists
         if ring:
             ratio, hull = ring
-            hull_x = [point.x for point in hull]
-            hull_y = [point.y for point in hull]
             inner_ring_detector.config(text=f"outer hull ratio: {round(ratio, 2)}")
 
         canvas.draw()
