@@ -2,9 +2,7 @@ from config import (
     EMPTY, MOORE_NBD, MUSHROOMS, OLDER
 )
 
-from utils import Point, convex_hull, linear_regression, area_polygon
-
-import numpy as np
+from utils import Point, convex_hull
 
 
 class CA:
