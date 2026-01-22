@@ -1,9 +1,4 @@
-Fungal species,"Ring
-Diameter
-(m)","Specific Growth
-Rate","Age 
-",Year of Establishment
-Agaricus aff. lilaceps,272,0.26,522,1500
+Fungal species,"Ring Diameter(m)","Specific Growth Rate","Age",Year of Establishment
 Agaricus aff. lilaceps,94,0.26,180,1842
 Agaricus aff. lilaceps,45,0.26,86,1936
 A. argenteus,43,0.218,98,1924

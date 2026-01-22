@@ -134,5 +134,3 @@ class CA:
             return None
 
         return convex_hull(mushroom_and_older_coordinates)
-
-

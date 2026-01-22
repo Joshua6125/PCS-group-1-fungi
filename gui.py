@@ -1,7 +1,6 @@
 import tkinter
 import numpy as np
 
-from utils import gkern
 from config import SPORE, sim_parameters, colors, state_names
 
 import threading
@@ -15,6 +14,15 @@ from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 import matplotlib.patches as mpatches
+
+
+# Dropdown for selecting CA type
+CA_TYPES = {
+    "BasicSim": BasicSim,
+    "BasicToxinSim": BasicToxinSim,
+    "ProbToxinSim": ProbToxinSim,
+    "ProbToxinDeathSim": ProbToxinDeathSim
+}
 
 
 sim = ProbToxinSim(sim_parameters)
@@ -195,13 +203,6 @@ button_reset = tkinter.Button(
     sim_control_frame, text="Reset", command=reset_simulation)
 button_reset.grid(in_=sim_control_frame, row=0, column=2)
 
-# Dropdown for selecting CA type
-CA_TYPES = {
-    "BasicSim": BasicSim,
-    "BasicToxinSim": BasicToxinSim,
-    "ProbToxinSim": ProbToxinSim,
-    "ProbToxinDeathSim": ProbToxinDeathSim
-}
 
 selected_ca_type = tkinter.StringVar(root)
 selected_ca_type.set("ProbToxinSim")
@@ -277,22 +278,14 @@ current_kernel_size = 5
 current_kernel_sigma = 1.0
 
 
-def update_kernel():
-    sim_parameters["toxin_convolution"] = gkern(
-        current_kernel_size, current_kernel_sigma, 1)
+def update_kernel_size(new_val):
+    sim_parameters["toxin_convolution_size"] = int(new_val)
     sim.change_parameters(sim_parameters)
 
 
-def update_kernel_size(new_val):
-    global current_kernel_size
-    current_kernel_size = int(new_val)
-    update_kernel()
-
-
 def update_kernel_sigma(new_val):
-    global current_kernel_sigma
-    current_kernel_sigma = float(new_val)
-    update_kernel()
+    sim_parameters["toxin_convolution_variance"] = float(new_val.replace(',', '.'))
+    sim.change_parameters(sim_parameters)
 
 # Kernel size sliders
 slider_kernel_size = tkinter.Scale(slider_frame, from_=1, to=10, resolution=2,

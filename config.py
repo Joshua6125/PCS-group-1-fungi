@@ -1,5 +1,3 @@
-from utils import gkern
-
 # ----- CONSTANTS -----
 # States
 EMPTY = 0
@@ -23,6 +21,11 @@ MOORE_NBD = [
 
 TOXIN_RELEASING_STATES = [MATURING, OLDER, DECAYING]
 
+EVALUATED_FUNGI_DATASET = [
+    "Agaricus aff. lilaceps", "Bovista plumbea", "Calvatia spp",
+    "Disciseda candida", "Marasmius oreades"
+]
+
 # ----- VARIABLES -----
 sim_parameters = {
     "n": 75,
@@ -31,7 +34,8 @@ sim_parameters = {
     "prob_spread": 0.5,
     "toxin_threshold": 0.3,
     "toxin_decay": 0.05,
-    "toxin_convolution": gkern(5, 1, 1),
+    "toxin_convolution_size": 5,
+    "toxin_convolution_variance": 1.0,
     "show_toxins": False
 }
 
