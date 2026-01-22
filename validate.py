@@ -55,7 +55,7 @@ def main():
     plt.plot(t, slope_data * t, label="data")
     plt.plot(t, scaled_slope_CA * t, label="CA (scaled)")
     plt.legend()
-    plt.xlabel("time in days")
+    plt.xlabel("time in years")
     plt.ylabel("diameter in meters")
     plt.show()
 
