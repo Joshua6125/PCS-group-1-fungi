@@ -5,6 +5,18 @@ from utils import linear_regression, area_polygon, read_fairy_data
 import numpy as np
 
 def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tuple:
+    """
+    Function that performs iterative estimation of the diameter/time ratio of a CA model
+
+    :param param: simulation parameters
+    :type param: dict
+    :param iterations: amount of CA model instances
+    :type iterations: int
+    :param steps: Amount of steps simulated per CA model
+    :type steps: int
+    :return: Returns average slope and minimum hull ratio
+    :rtype: tuple[Any, ...]
+    """
     slopes = []
     hull_ratios = []
     for t in range(iterations):
@@ -29,11 +41,10 @@ def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tupl
         res = linear_regression(points)
         if res[0] is None:
             continue
+
         slopes.append(res[1])
 
-        # print("Case", t+1, "slope:", res[1])
-
-    return np.mean(slopes), np.mean(hull_ratios)
+    return np.mean(slopes), np.min(hull_ratios)
 
 
 def main():

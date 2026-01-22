@@ -24,6 +24,18 @@ def gkern_1d(l: int, sig: float) -> np.ndarray:
 
 
 def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
+    """
+    Used to apply one of two toxin diffusion convolution directions
+
+    :param source: Coordinates to be evaluated with toxicity level
+    :type source: dict
+    :param conv_size: width of convolution
+    :type conv_size: int
+    :param conv_var: variance of convolution
+    :type conv_var: float
+    :return: Returns a new set of coordinates with toxicity level
+    :rtype: dict[Any, Any]
+    """
     kernel_1d = gkern_1d(conv_size, conv_var)
     k = len(kernel_1d)
     c = k // 2
@@ -44,6 +56,13 @@ def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
 
 
 def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:
+    """
+    Reads fairy ring data from saved csv and parses it.
+
+    :param filename: Filename of file containing data
+    :return: Returns a numpy array with coordinate tuples
+    :rtype: ndarray[_AnyShape, dtype[Any]]
+    """
     with open(filename, 'r') as f:
         points = []
 
@@ -162,6 +181,14 @@ def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
 
 
 def area_polygon(points: list[Point]) -> float:
+    """
+    Calculates the area of a convex polygon
+
+    :param points: list of coordinate tuples
+    :type points: list[Point]
+    :return: area of polygon
+    :rtype: float
+    """
     n = len(points)
 
     if n <= 2:
