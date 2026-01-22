@@ -13,6 +13,7 @@ def gkern(l: int, sig: float) -> np.ndarray:
     kernel = np.outer(gauss, gauss)
     return kernel / np.sum(kernel)
 
+
 def gkern_1d(l: int, sig: float) -> np.ndarray:
     """
     creates 1d gaussian kernel with side length `l` and a sigma of `sig`
@@ -22,7 +23,61 @@ def gkern_1d(l: int, sig: float) -> np.ndarray:
     return gauss / np.sum(gauss)
 
 
+def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
+    """
+    Apply toxin diffusion convolution directions
+
+    :param source: Coordinates to be evaluated with toxicity level
+    :type source: dict
+    :param conv_size: width of convolution
+    :type conv_size: int
+    :param conv_var: variance of convolution
+    :type conv_var: float
+    :return: Returns a new set of coordinates with toxicity level
+    :rtype: dict[Any, Any]
+    """
+    kernel_1d = gkern_1d(conv_size, conv_var)
+    k = len(kernel_1d)
+    c = k // 2
+
+    target = {}
+    for (y, x), val in source.items():
+        for d in range(k):
+            kv = kernel_1d[d]
+            if kv == 0:
+                continue
+
+            t1 = y
+            t2 = x + (d - c)
+
+            target[(t1, t2)] = (
+                target.get((t1, t2), 0.0) + val * kv
+            )
+
+    next_target = {}
+    for (y, x), val in source.items():
+        for d in range(k):
+            kv = kernel_1d[d]
+            if kv == 0:
+                continue
+
+            t1 = y + (d - c)
+            t2 = x
+            next_target[(t1, t2)] = (
+                next_target.get((t1, t2), 0.0) + val * kv
+            )
+
+    return next_target
+
+
 def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:
+    """
+    Reads fairy ring data from saved csv and parses it.
+
+    :param filename: Filename of file containing data
+    :return: Returns a numpy array with coordinate tuples
+    :rtype: ndarray[_AnyShape, dtype[Any]]
+    """
     with open(filename, 'r') as f:
         points = []
 
@@ -139,7 +194,16 @@ def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
 
     return ring_count/len(points), hull
 
+
 def area_polygon(points: list[Point]) -> float:
+    """
+    Calculates the area of a convex polygon
+
+    :param points: list of coordinate tuples
+    :type points: list[Point]
+    :return: area of polygon
+    :rtype: float
+    """
     n = len(points)
 
     if n <= 2:
