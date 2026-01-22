@@ -21,9 +21,9 @@ def run_single_simulation(variance, kernel_size, params, num_iterations):
     return simulation.inner_ring_detector()[0]
 
 def main():
-    variances = np.arange(0.1, 2, 0.1)
-    kernel_sizes = np.arange(1, 12, 2)
-    num_simulations = 10
+    variances = np.arange(0.01, 1, 0.05)
+    kernel_sizes = np.arange(1, 10, 2)
+    num_simulations = 20
     num_iterations = 50
 
     fairy_ring_vars = []
@@ -38,9 +38,12 @@ def main():
 
             vals = [f.result() for f in futures]
 
-            mean_val = np.mean(vals)
-            if mean_val >= 0.8:
-                print(f"var: {var}, kern_size: {kern_size} → mean: {mean_val}")
+            fairy_rings = [val >= 0.9 for val in vals]
+            fairy_ring_amt = fairy_rings.count(True)
+            fairy_ring_ratio = fairy_ring_amt/num_simulations
+            print(fairy_ring_ratio)
+            if fairy_ring_ratio >= 0.5:
+                print(f"FAIRY RING DETECTED")
                 np.append(fairy_ring_kern_sizes, kern_size)
                 fairy_ring_vars.append(var)
                 fairy_ring_kern_sizes.append(kern_size)
