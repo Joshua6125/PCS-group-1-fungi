@@ -52,7 +52,7 @@ def main():
 
     print(fairy_ring_vars, fairy_ring_kern_sizes)
     plt.scatter(fairy_ring_vars, fairy_ring_kern_sizes)
-    plt.title("Relative Size Inner Rings for diffusion parameters")
+    plt.title("Do fairy rings show for diffusion parameters")
     plt.xlabel("Variance")
     plt.ylabel("Kernel Size")
     plt.legend()
