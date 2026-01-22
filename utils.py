@@ -13,6 +13,7 @@ def gkern(l: int, sig: float) -> np.ndarray:
     kernel = np.outer(gauss, gauss)
     return kernel / np.sum(kernel)
 
+
 def gkern_1d(l: int, sig: float) -> np.ndarray:
     """
     creates 1d gaussian kernel with side length `l` and a sigma of `sig`
@@ -20,6 +21,26 @@ def gkern_1d(l: int, sig: float) -> np.ndarray:
     ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
     gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
     return gauss / np.sum(gauss)
+
+
+def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
+    kernel_1d = gkern_1d(conv_size, conv_var)
+    k = len(kernel_1d)
+    c = k // 2
+
+    target = {}
+    for (y, x), val in source.items():
+        for dy in range(k):
+            kv = kernel_1d[dy]
+            if kv == 0:
+                continue
+
+            ty = y + (dy - c)
+            target[(ty, x)] = (
+                target.get((ty, x), 0.0) + val * kv
+            )
+
+    return target
 
 
 def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:
@@ -138,6 +159,7 @@ def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
             ring_count += 1
 
     return ring_count/len(points), hull
+
 
 def area_polygon(points: list[Point]) -> float:
     n = len(points)

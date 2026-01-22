@@ -57,6 +57,7 @@ class CA:
     def step(self):
         new_state_grid = {}
         current_state = self.state_grid
+        current_toxin = self.toxicity_grid
 
         # Determine relevant coordinates
         coords_to_check = set(current_state.keys())
