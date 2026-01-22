@@ -5,12 +5,12 @@ from utils import linear_regression, area_polygon
 import numpy as np
 import matplotlib.pyplot as plt
 
-def estimate_CA_vars(iterations: int = 5, steps: int = 100) -> tuple:
+def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tuple:
     slopes = []
     hull_ratios = []
     for t in range(iterations):
-        sim = BasicToxinSim(sim_parameters)
-        sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
+        sim = BasicToxinSim(param)
+        sim.set_state(param["n"]//2, param["n"]//2, SPORE)
 
         points = [(0, 0)]
         for _ in range(steps):
@@ -30,7 +30,7 @@ def estimate_CA_vars(iterations: int = 5, steps: int = 100) -> tuple:
         res = linear_regression(points)
         slopes.append(res[1])
 
-        print("case", t+1, "slope:", res[1])
+        print("Case", t+1, "slope:", res[1])
 
     return np.mean(slopes), np.mean(hull_ratios)
 
@@ -38,7 +38,7 @@ def estimate_CA_vars(iterations: int = 5, steps: int = 100) -> tuple:
 def main():
     intercept_data, slope_data = linear_regression()
 
-    slope_CA, hull_ratio = estimate_CA_vars(iterations=5, steps=150)
+    slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=10, steps=50)
     if hull_ratio < 0.9:
         print("Too many inner rings. Avg ratio:", hull_ratio)
         return
@@ -55,6 +55,8 @@ def main():
     plt.plot(t, slope_data * t, label="data")
     plt.plot(t, scaled_slope_CA * t, label="CA (scaled)")
     plt.legend()
+    plt.xlabel("time in days")
+    plt.ylabel("diameter in meters")
     plt.show()
 
 
