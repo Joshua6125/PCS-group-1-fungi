@@ -44,6 +44,8 @@ def main():
                 np.append(fairy_ring_kern_sizes, kern_size)
                 fairy_ring_vars.append(var)
                 fairy_ring_kern_sizes.append(kern_size)
+            else:
+                print("no fairy ring detected")
 
     print(fairy_ring_vars, fairy_ring_kern_sizes)
     plt.scatter(fairy_ring_vars, fairy_ring_kern_sizes)
