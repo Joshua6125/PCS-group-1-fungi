@@ -18,7 +18,7 @@ def run_single_simulation(variance, kernel_size, params, num_iterations):
     return simulation.inner_ring_detector()
 
 def main():
-    variances = np.arange(0, 2, 0.1)
+    variances = np.arange(0.1, 2, 0.1)
     kernel_sizes = np.arange(1, 5, 2)
     num_simulations = 10
     num_iterations = 50
