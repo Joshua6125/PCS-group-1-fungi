@@ -3,15 +3,10 @@ from transitions import BasicSim, BasicToxinSim, ProbToxinSim, ProbToxinDeathSim
 from utils import linear_regression, area_polygon
 
 import numpy as np
+import matplotlib.pyplot as plt
 
-def main():
-    iterations = 1
-    steps = 100
-
-    bi, si = linear_regression()
-
+def estimate_CA_slope(iterations=5, steps=100):
     slopes = []
-
     for t in range(iterations):
         sim = BasicToxinSim(sim_parameters)
         sim.set_state(sim_parameters["n"]//2, sim_parameters["n"]//2, SPORE)
@@ -27,7 +22,6 @@ def main():
             area = area_polygon(hull_points)
             diameter = 2*np.sqrt(area/np.pi)
 
-            # Add extra unit of time to make 1-indexed
             points.append((diameter, sim.time))
 
         points = np.array(points)
@@ -36,7 +30,23 @@ def main():
 
         print("t", t, "slope:", res[1])
 
-    print(bi/np.mean(slopes), bi, np.mean(slopes))
+    return np.mean(slopes)
+
+
+def main():
+    _, slope_data = linear_regression()
+
+    slope_CA = estimate_CA_slope(iterations=5)
+
+    slope_ratio = slope_data/slope_CA
+
+    print("Slope data:", slope_data)
+    print("Slope CA:  ", slope_CA)
+    print("ratio s_data/s_CA:", slope_ratio)
+
+
+
+
 
 
 if __name__ == "__main__":

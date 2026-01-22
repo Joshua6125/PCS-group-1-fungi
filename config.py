@@ -26,6 +26,10 @@ EVALUATED_FUNGI_DATASET = [
     "Disciseda candida", "Marasmius oreades"
 ]
 
+# scale of CA
+CELL_SCALE = 3.7299489928772203 # meters per cell
+TIME_SCALE = 1                  # years per time step
+
 # ----- VARIABLES -----
 sim_parameters = {
     "n": 75,

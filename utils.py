@@ -1,6 +1,5 @@
 import numpy as np
 import csv
-import scipy.stats as stats
 
 from config import EVALUATED_FUNGI_DATASET
 
@@ -52,7 +51,6 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
 
     # Should be a list of points
     assert points.shape[1] == 2
-
 
     # Add bias term to x-values
     X_b = np.c_[np.ones((len(points), 1)), points.T[0]]
@@ -137,9 +135,12 @@ def convex_hull(points: list[Point]) -> tuple[float, list[Point]]:
 def area_polygon(points: list[Point]) -> float:
     n = len(points)
 
+    if n <= 2:
+        return 0
+
     area = 0
     for i in range(n):
         area += points[i].x * points[(i + 1)%n].y
         area -= points[i].y * points[(i + 1)%n].x
 
-    return area/2
+    return -area/2
