@@ -3,7 +3,6 @@ from transitions import BasicSim, BasicToxinSim, ProbToxinSim, ProbToxinDeathSim
 from utils import linear_regression, area_polygon, read_fairy_data
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tuple:
     slopes = []
