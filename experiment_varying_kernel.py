@@ -22,11 +22,12 @@ def run_single_simulation(variance, kernel_size, params, num_iterations):
 
 def main():
     variances = np.arange(0.1, 2, 0.1)
-    kernel_sizes = np.arange(1, 5, 2)
+    kernel_sizes = np.arange(1, 12, 2)
     num_simulations = 10
     num_iterations = 50
 
-    ring_ratios = dict()
+    fairy_ring_vars = []
+    fairy_ring_kern_sizes = []
 
     with ProcessPoolExecutor() as executor:
         for var, kern_size in itertools.product(variances, kernel_sizes):
@@ -38,11 +39,14 @@ def main():
             vals = [f.result() for f in futures]
 
             mean_val = np.mean(vals)
-            print(f"var: {var}, kern_size: {kern_size} → mean: {mean_val}")
-            ring_ratios[(str(var),str(kern_size))] = mean_val
+            if mean_val >= 0.8:
+                print(f"var: {var}, kern_size: {kern_size} → mean: {mean_val}")
+                np.append(fairy_ring_kern_sizes, kern_size)
+                fairy_ring_vars.append(var)
+                fairy_ring_kern_sizes.append(kern_size)
 
-   
-    plt.imshow(ring_ratios, 'viridis')
+    print(fairy_ring_vars, fairy_ring_kern_sizes)
+    plt.scatter(fairy_ring_vars, fairy_ring_kern_sizes)
     plt.title("Relative Size Inner Rings for diffusion parameters")
     plt.xlabel("Variance")
     plt.ylabel("Kernel Size")
