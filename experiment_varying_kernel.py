@@ -23,7 +23,7 @@ def main():
     num_simulations = 10
     num_iterations = 50
 
-    ring_ratios = np.zeros((len(variances), len(kernel_sizes)))
+    ring_ratios = dict()
 
     with ProcessPoolExecutor() as executor:
         for var, kern_size in itertools.product(variances, kernel_sizes):
@@ -36,7 +36,7 @@ def main():
 
             mean_val = np.mean(vals)
             print(f"var: {var}, kern_size: {kern_size} → mean: {mean_val}")
-            ring_ratios[var][kern_size] = mean_val
+            ring_ratios[(str(var),str(kern_size))] = mean_val
 
    
     plt.imshow(ring_ratios, 'viridis')
