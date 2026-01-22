@@ -156,16 +156,23 @@ class BasicToxinSim(CA):
                 if new_val > 0:
                     source_grid[(y, x)] = new_val
 
+        # Consider all toxin releasing states
+        for (y, x), state in state_grid.items():
+            if state in TOXIN_RELEASING_STATES:
+                source_grid[(y, x)] = 1
+
         vertical_grid = apply_diffusion(
             source_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance
+            self.toxin_convolution_variance,
+            horizontal=True
         )
 
         new_toxicity_grid = apply_diffusion(
             vertical_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance
+            self.toxin_convolution_variance,
+            horizontal=False
         )
 
         return new_toxicity_grid
@@ -254,16 +261,23 @@ class ProbToxinSim(CA):
                 if new_val > 0:
                     source_grid[(y, x)] = new_val
 
+        # Consider all toxin releasing states
+        for (y, x), state in state_grid.items():
+            if state in TOXIN_RELEASING_STATES:
+                source_grid[(y, x)] = 1
+
         vertical_grid = apply_diffusion(
             source_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance
+            self.toxin_convolution_variance,
+            horizontal=True
         )
 
         new_toxicity_grid = apply_diffusion(
             vertical_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance
+            self.toxin_convolution_variance,
+            horizontal=False
         )
 
         return new_toxicity_grid
@@ -361,16 +375,23 @@ class ProbToxinDeathSim(CA):
                 if new_val > 0:
                     source_grid[(y, x)] = new_val
 
+        # Consider all toxin releasing states
+        for (y, x), state in state_grid.items():
+            if state in TOXIN_RELEASING_STATES:
+                source_grid[(y, x)] = 1
+
         vertical_grid = apply_diffusion(
             source_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance
+            self.toxin_convolution_variance,
+            horizontal=True
         )
 
         new_toxicity_grid = apply_diffusion(
             vertical_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance
+            self.toxin_convolution_variance,
+            horizontal=False
         )
 
         return new_toxicity_grid

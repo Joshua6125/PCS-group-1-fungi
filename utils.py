@@ -23,7 +23,7 @@ def gkern_1d(l: int, sig: float) -> np.ndarray:
     return gauss / np.sum(gauss)
 
 
-def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
+def apply_diffusion(source: dict, conv_size: int, conv_var: float, horizontal: bool) -> dict:
     """
     Used to apply one of two toxin diffusion convolution directions
 
@@ -42,14 +42,20 @@ def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
 
     target = {}
     for (y, x), val in source.items():
-        for dy in range(k):
-            kv = kernel_1d[dy]
+        for d in range(k):
+            kv = kernel_1d[d]
             if kv == 0:
                 continue
 
-            ty = y + (dy - c)
-            target[(ty, x)] = (
-                target.get((ty, x), 0.0) + val * kv
+            if horizontal:
+                t1 = y
+                t2 = x + (d - c)
+            else:
+                t1 = y + (d - c)
+                t2 = x
+
+            target[(t1, t2)] = (
+                target.get((t1, t2), 0.0) + val * kv
             )
 
     return target
