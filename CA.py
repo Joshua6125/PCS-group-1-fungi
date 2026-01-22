@@ -2,9 +2,7 @@ from config import (
     EMPTY, MOORE_NBD, MUSHROOMS, OLDER
 )
 
-from utils import Point, convex_hull, linear_regression, area_polygon
-
-import numpy as np
+from utils import Point, convex_hull
 
 
 class CA:
@@ -13,10 +11,6 @@ class CA:
         self.state_grid: dict[tuple[int, int], int] = {}
         self.toxicity_grid: dict[tuple[int, int], float] = {}
         self.time = 0
-
-        intercept, slope = linear_regression()
-        self.intercept = intercept
-        self.slope = slope
 
     def get_grid_representation(
         self,

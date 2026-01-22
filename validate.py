@@ -1,9 +1,8 @@
-from config import sim_parameters, SPORE, CELL_SCALE, TIME_SCALE
+from config import sim_parameters, SPORE
 from transitions import BasicSim, BasicToxinSim, ProbToxinSim, ProbToxinDeathSim
-from utils import linear_regression, area_polygon
+from utils import linear_regression, area_polygon, read_fairy_data
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tuple:
     slopes = []
@@ -28,36 +27,49 @@ def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tupl
 
         points = np.array(points)
         res = linear_regression(points)
+        if res[0] is None:
+            continue
         slopes.append(res[1])
 
-        print("Case", t+1, "slope:", res[1])
+        # print("Case", t+1, "slope:", res[1])
 
     return np.mean(slopes), np.mean(hull_ratios)
 
 
 def main():
-    intercept_data, slope_data = linear_regression()
+    # Get real data
+    data_points = read_fairy_data()
+    n = len(data_points)
 
-    slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=10, steps=50)
+    # Select a third of the points
+    np.random.shuffle(data_points)
+    calibration_points = data_points[:n//3]
+    validation_points = data_points[n//3:]
+
+    # Perform linear regression on points for slope
+    _, slope_data_calibration = linear_regression(calibration_points)
+    _, slope_data_validation = linear_regression(validation_points)
+    if slope_data_calibration is None or slope_data_validation is None:
+        raise Exception("Calibrating failed.")
+
+    # Caluclate CA slope for calibration
+    slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=2, steps=50)
     if hull_ratio < 0.9:
         print("Too many inner rings. Avg ratio:", hull_ratio)
         return
 
-    scaled_slope_CA = CELL_SCALE * slope_CA / TIME_SCALE
+    # Scaler for CA to calibrate to real data
+    scaler = slope_data_calibration / slope_CA
 
-    print("Slope data:     ", slope_data)
-    print("Slope CA:       ", slope_CA)
-    print("Hull ratio CA:  ", hull_ratio)
-    print("Slope CA scaled:", scaled_slope_CA)
-    print("Ratio CA/data:  ", scaled_slope_CA / slope_data)
+    # Calculate CA slope for validation
+    slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=2, steps=50)
+    if hull_ratio < 0.9:
+        print("Too many inner rings. Avg ratio:", hull_ratio)
+        return
 
-    t = np.linspace(0, 100, 1000)
-    plt.plot(t, slope_data * t, label="data")
-    plt.plot(t, scaled_slope_CA * t, label="CA (scaled)")
-    plt.legend()
-    plt.xlabel("time in years")
-    plt.ylabel("diameter in meters")
-    plt.show()
+    print("Ratio:  ", scaler * slope_CA/ slope_data_validation)
+    if (scaler * slope_CA/ slope_data_validation - 1) > 0.01:
+        print("More than 1% deviance,. Invalid!")
 
 
 if __name__ == "__main__":
