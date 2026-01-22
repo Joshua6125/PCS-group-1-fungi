@@ -140,19 +140,3 @@ class CA:
             return None
 
         return convex_hull(mushroom_and_older_coordinates)
-
-    def validate_growth(self, hull_points: list[Point]):
-        # Let the diameter be the average distance between bounds
-        area = area_polygon(hull_points)
-        diameter = 2*np.sqrt(area/np.pi)
-
-        # alpha := meters per cell
-        # beta  := days per timestep
-        # Should calculate the ratio alpha/beta using the average slope of CA runs.
-        # And then set alpha to 1 and beta to whatever s.t. alpha/beta = (avg slope data)/(avg slope CA)
-
-        data_i, data_s = linear_regression()
-
-
-
-
