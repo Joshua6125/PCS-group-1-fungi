@@ -15,18 +15,7 @@ def gkern(l: int, sig: float) -> np.ndarray:
     return kernel / np.sum(kernel)
 
 
-def linear_regression(filename="fairy_ring_data.csv") -> tuple:
-    '''
-    Perform linear regression fairy ring data
-    x-values: time in days
-    y-values: diameter in meters
-
-    :return: intercept, slope
-    :rtype: tuple
-    '''
-
-    # Read and parse fairy ring data
-    # This currently ignores the type of
+def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:
     with open(filename, 'r') as f:
         points = []
 
@@ -42,7 +31,28 @@ def linear_regression(filename="fairy_ring_data.csv") -> tuple:
             age = int(a)
             points.append((diameter, age))
 
-    points = np.array(points)
+    return np.array(points)
+
+
+def linear_regression(points: np.ndarray | None = None) -> tuple:
+    '''
+    Perform linear regression
+    x-values: time in days
+    y-values: diameter in metersparam
+
+    :param points: List of coordinates
+    :type points: ndarray
+    :return: intercept, slope
+    :rtype: tuple
+    '''
+
+    # Read and parse fairy ring data if no points were given
+    if points is None:
+        points = read_fairy_data()
+
+    # Should be a list of points
+    assert points.shape[1] == 2
+
 
     # Add bias term to x-values
     X_b = np.c_[np.ones((len(points), 1)), points.T[0]]
