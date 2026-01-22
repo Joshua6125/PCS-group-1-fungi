@@ -55,7 +55,7 @@ def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
             )
 
     next_target = {}
-    for (y, x), val in source.items():
+    for (y, x), val in target.items():
         for d in range(k):
             kv = kernel_1d[d]
             if kv == 0:
