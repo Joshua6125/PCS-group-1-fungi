@@ -66,15 +66,14 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
     Y_val = points.T[1]
 
     # Minimize the sum of squared residuals
-    res = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(Y_val)
+    try:
+        res = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(Y_val)
+    except Exception as E:
+        print(E)
+        return None, None
 
     slope = res[1]
     intercept = res[0]
-
-    Y_hat = X_b @ res
-
-    # Residuals
-    residuals = Y_val - Y_hat
 
     return intercept, slope
 

@@ -14,10 +14,6 @@ class CA:
         self.toxicity_grid: dict[tuple[int, int], float] = {}
         self.time = 0
 
-        intercept, slope = linear_regression()
-        self.intercept = intercept
-        self.slope = slope
-
     def get_grid_representation(
         self,
         min_x: int = 0,
