@@ -6,12 +6,20 @@ from config import EVALUATED_FUNGI_DATASET
 
 def gkern(l: int, sig: float) -> np.ndarray:
     """
-    creates gaussian kernel with side length `l` and a sigma of `sig`
+    creates 2d gaussian kernel with side length `l` and a sigma of `sig`
     """
     ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
     gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
     kernel = np.outer(gauss, gauss)
     return kernel / np.sum(kernel)
+
+def gkern_1d(l: int, sig: float) -> np.ndarray:
+    """
+    creates 1d gaussian kernel with side length `l` and a sigma of `sig`
+    """
+    ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
+    gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
+    return gauss / np.sum(gauss)
 
 
 def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:

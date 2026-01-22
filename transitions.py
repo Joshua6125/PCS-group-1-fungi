@@ -3,7 +3,7 @@ from config import (
     EMPTY, SPORE, YOUNG, MATURING, MUSHROOMS, OLDER, DECAYING, DEAD1, DEAD2,
     INERT, MOORE_NBD, TOXIN_RELEASING_STATES
 )
-from utils import gkern
+from utils import gkern_1d
 
 import numpy as np
 
@@ -163,26 +163,38 @@ class BasicToxinSim(CA):
 
         # Sparse convolution
         new_toxicity_grid = {}
-        kernel = gkern(self.toxin_convolution_size, self.toxin_convolution_variance)
-        ky, kx = kernel.shape
-        cy, cx = ky // 2, kx // 2
+        kernel_1d = gkern_1d(
+            self.toxin_convolution_size,
+            self.toxin_convolution_variance,
+        )
+        k = len(kernel_1d)
+        c = k // 2
 
+        # vertical convolutions
+        vertical_grid = {}
         for (y, x), val in source_grid.items():
-            # Apply kernel
-            for dy in range(ky):
-                for dx in range(kx):
-                    kv = kernel[dy, dx]
-                    # Skip zero entries
-                    if kv == 0:
-                        continue
+            for dy in range(k):
+                kv = kernel_1d[dy]
+                if kv == 0:
+                    continue
 
-                    target_y = y + (dy - cy)
-                    target_x = x + (dx - cx)
+                ty = y + (dy - c)
+                vertical_grid[(ty, x)] = (
+                    vertical_grid.get((ty, x), 0.0) + val * kv
+                )
 
-                    # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] =\
-                        new_toxicity_grid.get((target_y, target_x), 0.0)\
-                        + val * kv
+        # horizontal convolutions
+        new_toxicity_grid = {}
+        for (y, x), val in vertical_grid.items():
+            for dx in range(k):
+                kv = kernel_1d[dx]
+                if kv == 0:
+                    continue
+
+                tx = x + (dx - c)
+                new_toxicity_grid[(y, tx)] = (
+                    new_toxicity_grid.get((y, tx), 0.0) + val * kv
+                )
 
         return new_toxicity_grid
 
@@ -277,24 +289,38 @@ class ProbToxinSim(CA):
 
         # Sparse convolution
         new_toxicity_grid = {}
-        kernel = gkern(self.toxin_convolution_size, self.toxin_convolution_variance)
-        ky, kx = kernel.shape
-        cy, cx = ky // 2, kx // 2
+        kernel_1d = gkern_1d(
+            self.toxin_convolution_size,
+            self.toxin_convolution_variance,
+        )
+        k = len(kernel_1d)
+        c = k // 2
 
+        # vertical convolutions
+        vertical_grid = {}
         for (y, x), val in source_grid.items():
-            # Apply kernel
-            for dy in range(ky):
-                for dx in range(kx):
-                    kv = kernel[dy, dx]
-                    # Skip zero entries
-                    if kv == 0:
-                        continue
+            for dy in range(k):
+                kv = kernel_1d[dy]
+                if kv == 0:
+                    continue
 
-                    target_y = y + (dy - cy)
-                    target_x = x + (dx - cx)
+                ty = y + (dy - c)
+                vertical_grid[(ty, x)] = (
+                    vertical_grid.get((ty, x), 0.0) + val * kv
+                )
 
-                    # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] = new_toxicity_grid.get((target_y, target_x), 0.0) + val * kv
+        # horizontal convolutions
+        new_toxicity_grid = {}
+        for (y, x), val in vertical_grid.items():
+            for dx in range(k):
+                kv = kernel_1d[dx]
+                if kv == 0:
+                    continue
+
+                tx = x + (dx - c)
+                new_toxicity_grid[(y, tx)] = (
+                    new_toxicity_grid.get((y, tx), 0.0) + val * kv
+                )
 
         return new_toxicity_grid
 
@@ -398,25 +424,37 @@ class ProbToxinDeathSim(CA):
 
         # Sparse convolution
         new_toxicity_grid = {}
-        kernel = gkern(self.toxin_convolution_size, self.toxin_convolution_variance)
-        ky, kx = kernel.shape
-        cy, cx = ky // 2, kx // 2
+        kernel_1d = gkern_1d(
+            self.toxin_convolution_size,
+            self.toxin_convolution_variance,
+        )
+        k = len(kernel_1d)
+        c = k // 2
 
+        # vertical convolutions
+        vertical_grid = {}
         for (y, x), val in source_grid.items():
-            # Apply kernel
-            for dy in range(ky):
-                for dx in range(kx):
-                    kv = kernel[dy, dx]
-                    # Skip zero entries
-                    if kv == 0:
-                        continue
+            for dy in range(k):
+                kv = kernel_1d[dy]
+                if kv == 0:
+                    continue
 
-                    target_y = y + (dy - cy)
-                    target_x = x + (dx - cx)
+                ty = y + (dy - c)
+                vertical_grid[(ty, x)] = (
+                    vertical_grid.get((ty, x), 0.0) + val * kv
+                )
 
-                    # Accumulate
-                    new_toxicity_grid[(target_y, target_x)] =\
-                        new_toxicity_grid.get((target_y, target_x), 0.0) +\
-                        val * kv
+        # horizontal convolutions
+        new_toxicity_grid = {}
+        for (y, x), val in vertical_grid.items():
+            for dx in range(k):
+                kv = kernel_1d[dx]
+                if kv == 0:
+                    continue
+
+                tx = x + (dx - c)
+                new_toxicity_grid[(y, tx)] = (
+                    new_toxicity_grid.get((y, tx), 0.0) + val * kv
+                )
 
         return new_toxicity_grid
