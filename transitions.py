@@ -161,18 +161,10 @@ class BasicToxinSim(CA):
             if state in TOXIN_RELEASING_STATES:
                 source_grid[(y, x)] = 1
 
-        vertical_grid = apply_diffusion(
+        new_toxicity_grid = apply_diffusion(
             source_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance,
-            horizontal=True
-        )
-
-        new_toxicity_grid = apply_diffusion(
-            vertical_grid,
-            self.toxin_convolution_size,
-            self.toxin_convolution_variance,
-            horizontal=False
+            self.toxin_convolution_variance
         )
 
         return new_toxicity_grid
@@ -266,18 +258,10 @@ class ProbToxinSim(CA):
             if state in TOXIN_RELEASING_STATES:
                 source_grid[(y, x)] = 1
 
-        vertical_grid = apply_diffusion(
+        new_toxicity_grid = apply_diffusion(
             source_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance,
-            horizontal=True
-        )
-
-        new_toxicity_grid = apply_diffusion(
-            vertical_grid,
-            self.toxin_convolution_size,
-            self.toxin_convolution_variance,
-            horizontal=False
+            self.toxin_convolution_variance
         )
 
         return new_toxicity_grid
@@ -380,18 +364,10 @@ class ProbToxinDeathSim(CA):
             if state in TOXIN_RELEASING_STATES:
                 source_grid[(y, x)] = 1
 
-        vertical_grid = apply_diffusion(
+        new_toxicity_grid = apply_diffusion(
             source_grid,
             self.toxin_convolution_size,
-            self.toxin_convolution_variance,
-            horizontal=True
-        )
-
-        new_toxicity_grid = apply_diffusion(
-            vertical_grid,
-            self.toxin_convolution_size,
-            self.toxin_convolution_variance,
-            horizontal=False
+            self.toxin_convolution_variance
         )
 
         return new_toxicity_grid
