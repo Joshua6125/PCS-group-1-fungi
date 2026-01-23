@@ -135,8 +135,9 @@ def run_iterations():
     button_reset.config(state="disabled")
     ca_type_menu.config(state="disabled")
     n = int(iter_amount_var.get())
+    assert n > 0, "Number of iterations must be positive"
     threading.Thread(target=sim_worker, args=(n,), daemon=True).start()
-
+    
 
 def sim_worker(n):
     for _ in range(n):
@@ -225,7 +226,9 @@ slider_frame.columnconfigure(1, weight=1)
 
 
 def update_prob_spore_to_hyphae(new_val):
-    sim_parameters["prob_spore_to_hyphae"] = float(new_val.replace(',', '.'))
+    val = float(new_val.replace(',', '.'))
+    assert 0 <= val <= 1.0, f"Probability must be between 0 and 1, got {val}"
+    sim_parameters["prob_spore_to_hyphae"] = val
     sim.change_parameters(sim_parameters)
 
 
@@ -238,7 +241,9 @@ slider_prob_spore_to_hyphae.set(sim_parameters["prob_spore_to_hyphae"])
 
 
 def update_prob_spread(new_val):
-    sim_parameters["prob_spread"] = float(new_val.replace(',', '.'))
+    val = float(new_val.replace(',', '.'))
+    assert 0 <= val <= 1.0, f"Probability must be between 0 and 1, got {val}"
+    sim_parameters["prob_spread"] = val
     sim.change_parameters(sim_parameters)
 
 
@@ -250,7 +255,9 @@ slider_prob_spread.set(sim_parameters["prob_spread"])
 
 
 def update_toxin_threshold(new_val):
-    sim_parameters["toxin_threshold"] = float(new_val.replace(',', '.'))
+    val = float(new_val.replace(',', '.'))
+    assert 0 <= val <= 1.0, f"Threshold must be between 0 and 1, got {val}"
+    sim_parameters["toxin_threshold"] = val
     sim.change_parameters(sim_parameters)
 
 
@@ -284,7 +291,9 @@ def update_kernel_size(new_val):
 
 
 def update_kernel_sigma(new_val):
-    sim_parameters["toxin_convolution_variance"] = float(new_val.replace(',', '.'))
+    val = float(new_val.replace(',', '.'))
+    assert val > 0, f"Sigma must be positive, got {val}"
+    sim_parameters["toxin_convolution_variance"] = val
     sim.change_parameters(sim_parameters)
 
 # Kernel size sliders
