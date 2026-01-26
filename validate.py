@@ -1,6 +1,6 @@
 from config import sim_parameters, SPORE
 from transitions import BasicSim, BasicToxinSim, ProbToxinSim, ProbToxinDeathSim
-from utils import linear_regression, area_polygon, read_fairy_data
+from utils import linear_regression, area_polygon, read_fairy_data, regression_ci
 
 import numpy as np
 
@@ -14,10 +14,11 @@ def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tupl
     :type iterations: int
     :param steps: Amount of steps simulated per CA model
     :type steps: int
-    :return: Returns average slope and minimum hull ratio
+    :return: Returns average intercept, average slope, and minimum hull ratio
     :rtype: tuple[Any, ...]
     """
     slopes = []
+    intercepts = []
     hull_ratios = []
     for t in range(iterations):
         sim = BasicToxinSim(param)
@@ -43,8 +44,9 @@ def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tupl
             continue
 
         slopes.append(res[1])
+        intercepts.append(res[0])
 
-    return np.mean(slopes), np.min(hull_ratios)
+    return np.mean(intercepts), np.mean(slopes), np.min(hull_ratios)
 
 
 def main():
@@ -58,29 +60,41 @@ def main():
     validation_points = data_points[n//3:]
 
     # Perform linear regression on points for slope
-    _, slope_data_calibration = linear_regression(calibration_points)
-    _, slope_data_validation = linear_regression(validation_points)
-    if slope_data_calibration is None or slope_data_validation is None:
+    intercept_data, slope_data_calibration = linear_regression(calibration_points)
+    if slope_data_calibration is None:
         raise Exception("Calibrating failed.")
 
     # Caluclate CA slope for calibration
-    slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=2, steps=50)
+    intercept_CA, slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=2, steps=50)
     if hull_ratio < 0.9:
         print("Too many inner rings. Avg ratio:", hull_ratio)
         return
 
     # Scaler for CA to calibrate to real data
-    scaler = slope_data_calibration / slope_CA
+    scaler_slope = slope_data_calibration / slope_CA
+    scaler_intercept = intercept_data / intercept_CA
 
     # Calculate CA slope for validation
-    slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=2, steps=50)
+    intercept_CA, slope_CA, hull_ratio = estimate_CA_vars(sim_parameters, iterations=2, steps=50)
+
+    # Check if too much activation inside the outermost ring
     if hull_ratio < 0.9:
         print("Too many inner rings. Avg ratio:", hull_ratio)
         return
 
-    print("Ratio:  ", scaler * slope_CA/ slope_data_validation)
-    if (scaler * slope_CA/ slope_data_validation - 1) > 0.01:
-        print("More than 1% deviance,. Invalid!")
+    # Calculate confindence interval of remaining points
+    intercept_ci, slope_ci = regression_ci(validation_points)
+
+    # Check if model falls inside the confidence interval
+    if slope_ci[0] <= scaler_slope*slope_CA <= slope_ci[1] and \
+       intercept_ci[0] <= scaler_intercept*intercept_CA <= intercept_ci[1]:
+        print("PASSED")
+    else:
+        print("REJECTED: Model outside confidence interval.")
+        print(f"Scaled slope CA: {scaler_slope*slope_CA}")
+        print(f"Confidence interval slope: [{slope_ci[0]}, {slope_ci[1]}]")
+        print(f"Scaled intercept CA: {scaler_intercept*intercept_CA}")
+        print(f"Confidence interval slope: [{intercept_ci[0]}, {intercept_ci[1]}]")
 
 
 if __name__ == "__main__":
