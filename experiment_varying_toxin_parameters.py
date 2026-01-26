@@ -61,7 +61,7 @@ def main():
         with open("fairy_ring_prevalance.data", "r") as fr_p_file:
             heatmap_data = eval(fr_p_file.read())
     heatmap_data = [[100 * j for j in i] for i in heatmap_data]
-    im = plt.imshow(heatmap_data, cmap="magma")
+    im = plt.imshow(heatmap_data, cmap="vanimo")
     plt.colorbar(im, orientation="vertical", label="% of simulations forming FFR without inner ring")
     plt.title("FFR prevalence for varying kernel variance and decay values.")
     plt.ylabel("Variance")
