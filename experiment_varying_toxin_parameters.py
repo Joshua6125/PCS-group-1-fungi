@@ -63,7 +63,7 @@ def main():
     heatmap_data = [[100 * j for j in i] for i in heatmap_data]
     im = plt.imshow(heatmap_data, cmap="magma")
     plt.colorbar(im, orientation="vertical", label="% of simulations forming FFR without inner ring")
-    plt.title("Do fairy rings show for toxic parameters")
+    plt.title("FFR prevalence for varying kernel variance and decay values.")
     plt.ylabel("Variance")
     plt.yticks(range(0, len(variances), 2), labels=[f"{x:.2f}" for x in variances[::2]])
     plt.xlabel("Decay")
