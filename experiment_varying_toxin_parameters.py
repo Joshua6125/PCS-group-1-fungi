@@ -21,16 +21,17 @@ def run_single_simulation(kernel_variance, decay, params, num_iterations):
     return simulation.inner_ring_detector()[0]
 
 def main():
-    variances = np.arange(0.01, .6, 0.1)
-    decays = np.arange(0, .1, 0.01)
-    num_simulations = 20
+    variances = np.arange(0.01, .6, 0.05)
+    decays = np.arange(0, .1, 0.005)
+    num_simulations = 50
     num_iterations = 50
 
     fairy_ring_vars = []
     fairy_ring_decays = []
+    heatmap_data = np.zeros((len(variances), len(decays)))
 
     with ProcessPoolExecutor() as executor:
-        for var, decay in itertools.product(variances, decays):
+        for (n, var), (m, decay) in itertools.product(enumerate(variances), enumerate(decays)):
             print(f"calculating variance: {var}, decay: {decay}")
 
             futures = [executor.submit(run_single_simulation, var, decay, sim_parameters, num_iterations)
@@ -41,6 +42,7 @@ def main():
             fairy_rings = [val >= 0.9 for val in vals]
             fairy_ring_amt = fairy_rings.count(True)
             fairy_ring_ratio = fairy_ring_amt/num_simulations
+            heatmap_data[n][m] = fairy_ring_ratio
             print(fairy_ring_ratio)
             if fairy_ring_ratio >= 0.5:
                 print(f"FAIRY RING DETECTED")
@@ -49,12 +51,16 @@ def main():
             else:
                 print("no fairy ring detected")
 
-    print(fairy_ring_vars, fairy_ring_decays)
-    plt.scatter(fairy_ring_vars, fairy_ring_decays)
+    # print(fairy_ring_vars, fairy_ring_decays)
+    # plt.scatter(fairy_ring_vars, fairy_ring_decays)
+    with open("fairy_ring_prevalance.data", "w") as fr_p_file:
+        fr_p_file.write(str(heatmap_data))
+    plt.imshow(heatmap_data)
     plt.title("Do fairy rings show for toxic parameters")
-    plt.xlabel("Variance")
-    plt.ylabel("Decay")
-    plt.legend()
+    plt.ylabel("Variance")
+    plt.yticks(range(len(variances)), labels=[f"{x:.2f}" for x in variances])
+    plt.xlabel("Decay")
+    plt.xticks(range(len(decays)), labels=[f"{x:.2f}" for x in decays])
     plt.savefig("./plots/experiment_varying_toxin_parameters.png")
     plt.show()
 
