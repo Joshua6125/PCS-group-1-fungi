@@ -3,6 +3,8 @@ import csv
 
 from config import EVALUATED_FUNGI_DATASET
 
+from scipy import stats
+
 
 def gkern(l: int, sig: float) -> np.ndarray:
     """
@@ -131,6 +133,38 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
     intercept = res[0]
 
     return intercept, slope
+
+
+def regression_ci(points, confidence=0.95):
+    x = points[:, 0]
+    y = points[:, 1]
+
+    n = len(x)
+    dof = n - 2 # degrees of freedom
+
+    slope, intercept = np.polyfit(x, y, 1)
+    y_fit = intercept + slope * x
+
+    sigma2_hat = np.sum((y - y_fit)**2) / dof
+    x_mean = np.mean(x)
+    Sxx = np.sum((x - x_mean)**2)
+
+    se_slope = np.sqrt(sigma2_hat / Sxx)
+    se_intercept = se_slope * np.sqrt(np.sum(x**2) / n)
+
+    t_val = stats.t.ppf((1 + confidence) / 2, dof)
+
+    slope_ci = (
+        slope - t_val * se_slope,
+        slope + t_val * se_slope,
+    )
+
+    intercept_ci = (
+        intercept - t_val * se_intercept,
+        intercept + t_val * se_intercept,
+    )
+
+    return intercept_ci, slope_ci
 
 
 class Point():
