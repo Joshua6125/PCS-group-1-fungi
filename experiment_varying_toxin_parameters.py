@@ -36,8 +36,6 @@ def main():
 
     # Only calculate if calculate == True
     if calculate:
-        fairy_ring_vars = []
-        fairy_ring_decays = []
         heatmap_data = np.zeros((len(variances), len(decays)))
 
         with ProcessPoolExecutor() as executor:
@@ -61,12 +59,6 @@ def main():
                 fairy_ring_ratio = fairy_ring_amt/num_simulations
                 heatmap_data[n][m] = fairy_ring_ratio
                 print(fairy_ring_ratio)
-                if fairy_ring_ratio >= 0.5:
-                    print(f"FAIRY RING DETECTED")
-                    fairy_ring_vars.append(var)
-                    fairy_ring_decays.append(decay)
-                else:
-                    print("no fairy ring detected")
 
         with open("fairy_ring_prevalance.data", "w") as fr_p_file:
             fr_p_file.write(str([[float(j) for j in i] for i in heatmap_data]))
