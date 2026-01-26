@@ -7,6 +7,7 @@ from utils import Point, convex_hull
 
 class CA:
     def __init__(self, n: int):
+        assert n > 0, "Grid size must be positive"
         self.n: int = n
         self.state_grid: dict[tuple[int, int], int] = {}
         self.toxicity_grid: dict[tuple[int, int], float] = {}
@@ -93,6 +94,9 @@ class CA:
         :param state: Description
         :type state: int
         """
+        assert 0 <= x < self.n, f"x coordinate {x} out of bounds (0-{self.n-1})"
+        assert 0 <= y < self.n, f"y coordinate {y} out of bounds (0-{self.n-1})"
+
         if state == EMPTY:
             if (y, x) in self.state_grid:
                 del self.state_grid[(y, x)]
