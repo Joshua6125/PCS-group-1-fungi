@@ -69,9 +69,10 @@ def main():
             heatmap_data = eval(fr_p_file.read())
     heatmap_data = [[100 * j for j in i] for i in heatmap_data]
     im = plt.imshow(heatmap_data, cmap="vanimo")
-    plt.colorbar(im, orientation="vertical",
-                 label="% of simulations forming FFR without inner ring").ax.yaxis.set_major_formatter(ticker.PercentFormatter())
-    
+    cbar = plt.colorbar(im, orientation="vertical",
+                 label="% of simulations forming FFR without inner ring")
+    cbar.ax.yaxis.set_major_formatter(ticker.PercentFormatter())
+
     plt.title("FFR prevalence for varying kernel variance and decay values.")
     plt.ylabel("Variance")
     plt.yticks(range(0, len(variances), 2), labels=[
