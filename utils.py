@@ -150,7 +150,7 @@ def regression_ci(points, confidence=0.95):
     Sxx = np.sum((x - x_mean)**2)
 
     se_slope = np.sqrt(sigma2_hat / Sxx)
-    se_intercept = np.sqrt(sigma2_hat * (1/n + x_mean**2 / Sxx))
+    se_intercept = se_slope * np.sqrt(np.sum(x**2) / n)
 
     t_val = stats.t.ppf((1 + confidence) / 2, dof)
 
