@@ -34,6 +34,7 @@ def main():
 
     calculate = False
 
+    # Only calculate if calculate == True
     if calculate:
         fairy_ring_vars = []
         fairy_ring_decays = []
@@ -45,6 +46,7 @@ def main():
                     enumerate(decays)):
                 print(f"calculating variance: {var}, decay: {decay}")
 
+                # Use executor for parallelizing the workload
                 futures = [executor.submit(
                     run_single_simulation,
                     var,
@@ -69,6 +71,7 @@ def main():
         with open("fairy_ring_prevalance.data", "w") as fr_p_file:
             fr_p_file.write(str([[float(j) for j in i] for i in heatmap_data]))
     else:
+        # Else read from file
         with open("fairy_ring_prevalance.data", "r") as fr_p_file:
             heatmap_data = eval(fr_p_file.read())
     heatmap_data = [[100 * j for j in i] for i in heatmap_data]
