@@ -11,7 +11,7 @@ def run_single_simulation(
         kernel_variance: float,
         decay: float,
         params,
-        num_iterations: int):
+        num_iterations: int) -> float:
     params["toxin_convolution_variance"] = kernel_variance
     params["toxin_decay"] = decay
     simulation = ProbToxinSim(params)
