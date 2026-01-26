@@ -125,8 +125,7 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
     # Minimize the sum of squared residuals
     try:
         res = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(Y_val)
-    except Exception as E:
-        print(E)
+    except:
         return None, None
 
     slope = res[1]
@@ -135,12 +134,19 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
     return intercept, slope
 
 
-def regression_ci(points, confidence=0.95):
+def regression_ci(points, confidence=0.95) -> tuple:
+    '''
+    Calculates the confidence interval of a linear regression
+    of a set of points
+
+    :param points: set of points
+    :param confidence: confidence
+    '''
     x = points[:, 0]
     y = points[:, 1]
 
     n = len(x)
-    dof = n - 2 # degrees of freedom
+    dof = n - 2
 
     slope, intercept = np.polyfit(x, y, 1)
     y_fit = intercept + slope * x
