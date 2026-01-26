@@ -54,7 +54,6 @@ def main():
                 else:
                     print("no fairy ring detected")
 
-    if calculate:
         with open("fairy_ring_prevalance.data", "w") as fr_p_file:
             fr_p_file.write(str([[float(j) for j in i] for i in heatmap_data]))
     else:
