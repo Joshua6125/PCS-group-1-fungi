@@ -21,7 +21,7 @@ def gkern_1d(l: int, sig: float) -> np.ndarray:
     creates 1d gaussian kernel with side length `l` and a sigma of `sig`
     """
     ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
-    gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
+    gauss = np.exp(-0.25 * np.square(ax) / np.square(sig))
     return gauss / np.sum(gauss)
 
 
