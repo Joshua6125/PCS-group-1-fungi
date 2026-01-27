@@ -54,8 +54,8 @@ def main():
     # Validation parameters
     HULL_RATIO = 0.9
     STEPS = 50
-    ITERS = 200
-    PLOT_TYPE = 3
+    ITERS = 10
+    PLOT_TYPE = 1
 
     np.random.seed(42)
 
@@ -104,13 +104,11 @@ def main():
     print(f"Confidence interval slope: [{intercept_ci[0]:.2f}, {intercept_ci[1]:.2f}]")
 
     t = np.linspace(0, 100, 1000)
-
     if PLOT_TYPE == 0:
         slope_ref = 0.5 * (slope_ci[0] + slope_ci[1])
         intercept_ref = 0.5 * (intercept_ci[0] + intercept_ci[1])
 
         residual_CA = (scaler_slope * slope_CA * t + scaler_intercept * intercept_CA) - (slope_ref * t + intercept_ref)
-
         residual_lower = (slope_ci[0] - slope_ref) * t + (intercept_ci[0] - intercept_ref)
         residual_upper = (slope_ci[1] - slope_ref) * t + (intercept_ci[1] - intercept_ref)
 
@@ -119,10 +117,19 @@ def main():
         plt.xlabel("Time")
         plt.ylabel("Residual Diameter")
     elif PLOT_TYPE == 1:
+        fig, ax = plt.subplots()
         CA_val = scaler_slope*slope_CA*t + scaler_intercept*intercept_CA
-
         lower = slope_ci[0] * t + intercept_ci[0]
         upper = slope_ci[1] * t + intercept_ci[1]
+
+        x1, x2, y1, y2 = 84, 87, 157, 162
+        axins = ax.inset_axes(
+            [0.5, 0.05, 0.4, 0.4], # type: ignore
+            xlim=(x1, x2), ylim=(y1, y2), xticklabels=[], yticklabels=[])
+        axins.plot(t, CA_val)
+        axins.fill_between(t, lower, upper, alpha=0.3, label="residual 95% confidence band")
+
+        ax.indicate_inset_zoom(axins, edgecolor="black")
 
         plt.fill_between(t, lower, upper, alpha=0.3, label="residual 95% confidence band")
         plt.plot(t, CA_val, linewidth=1, label="Residual scaled CA model")
@@ -130,7 +137,6 @@ def main():
         plt.ylabel("Diameter")
     elif PLOT_TYPE == 2:
         scaled_ca_slopes = scaler_slope * np.array(slope_CA_arr)
-
         plt.hist(scaled_ca_slopes, bins=30, density=True, alpha=0.6, label="CA slope distribution")
         plt.axvspan(slope_ci[0], slope_ci[1], alpha=0.3, label="95% empirical CI")
         plt.axvline(slope_data_calibration, linestyle="--", linewidth=2, label="Empirical slope")
