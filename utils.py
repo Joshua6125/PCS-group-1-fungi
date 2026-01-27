@@ -173,6 +173,24 @@ def regression_ci(points, confidence=0.95) -> tuple:
     return intercept_ci, slope_ci
 
 
+def bootstrap_slope_ci(points, n_boot=5000, confidence=0.95):
+    slopes = []
+    n = len(points)
+
+    for _ in range(n_boot):
+        sample = points[np.random.randint(0, n, n)]
+        _, slope = linear_regression(sample)
+        if slope is not None:
+            slopes.append(slope)
+
+    slopes = np.array(slopes)
+    alpha = (1 - confidence) / 2
+    return (
+        np.quantile(slopes, alpha),
+        np.quantile(slopes, 1 - alpha)
+    )
+
+
 class Point():
     def __init__(self, x, y):
         self.x = x

@@ -1,6 +1,6 @@
 from config import sim_parameters, SPORE
 from transitions import BasicSim, BasicToxinSim, ProbToxinSim, ProbToxinDeathSim
-from utils import linear_regression, area_polygon, read_fairy_data, regression_ci
+import utils
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -33,14 +33,14 @@ def estimate_CA_vars(param: dict, iterations: int = 5, steps: int = 100) -> tupl
             if hull is None: continue
             hull_ratio, hull_points = hull
 
-            area = area_polygon(hull_points)
+            area = utils.area_polygon(hull_points)
             diameter = 2*np.sqrt(area/np.pi)
 
             points.append((diameter, sim.time))
             hull_ratios.append(hull_ratio)
 
         points = np.array(points)
-        res = linear_regression(points)
+        res = utils.linear_regression(points)
         if res[0] is None:
             continue
 
@@ -55,10 +55,12 @@ def main():
     HULL_RATIO = 0.9
     STEPS = 50
     ITERS = 200
-    PLOT_TYPE = 2
+    PLOT_TYPE = 3
+
+    np.random.seed(42)
 
     # Get real data
-    data_points = read_fairy_data()
+    data_points = utils.read_fairy_data()
     n = len(data_points)
 
     # Select a third of the points
@@ -67,7 +69,7 @@ def main():
     validation_points = data_points[n//3:]
 
     # Perform linear regression on points for slope
-    intercept_data, slope_data_calibration = linear_regression(calibration_points)
+    intercept_data, slope_data_calibration = utils.linear_regression(calibration_points)
     if slope_data_calibration is None:
         raise Exception("Calibrating failed.")
 
@@ -87,7 +89,7 @@ def main():
     scaler_intercept = intercept_data / intercept_CA
 
     # Calculate confindence interval of remaining points
-    intercept_ci, slope_ci = regression_ci(validation_points)
+    intercept_ci, slope_ci = utils.regression_ci(validation_points)
 
     # Check if model falls inside the confidence interval
     if slope_ci[0] <= scaler_slope*slope_CA <= slope_ci[1] and \
@@ -131,6 +133,14 @@ def main():
 
         plt.hist(scaled_ca_slopes, bins=30, density=True, alpha=0.6, label="CA slope distribution")
         plt.axvspan(slope_ci[0], slope_ci[1], alpha=0.3, label="95% empirical CI")
+        plt.axvline(slope_data_calibration, linestyle="--", linewidth=2, label="Empirical slope")
+        plt.xlabel("Radial growth rate")
+        plt.ylabel("Density")
+    elif PLOT_TYPE == 3:
+        bootstrap_ci = utils.bootstrap_slope_ci(validation_points)
+        scaled_ca_slopes = scaler_slope * np.array(slope_CA_arr)
+        plt.hist(scaled_ca_slopes, bins=30, density=True, alpha=0.6, label="CA slope distribution")
+        plt.axvspan(bootstrap_ci[0], bootstrap_ci[1], alpha=0.3, label="95% emprical percentile")
         plt.axvline(slope_data_calibration, linestyle="--", linewidth=2, label="Empirical slope")
         plt.xlabel("Radial growth rate")
         plt.ylabel("Density")
