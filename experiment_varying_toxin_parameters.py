@@ -22,9 +22,9 @@ def run_single_simulation(
         simulation.step()
 
     detect = simulation.inner_ring_detector()
-    if detect == None:
+    if detect is None:
         return 0
-    return simulation.inner_ring_detector()[0]
+    return detect[0]
 
 
 def main():
@@ -61,11 +61,11 @@ def main():
                 heatmap_data[n][m] = fairy_ring_ratio
                 print(fairy_ring_ratio)
 
-        with open("fairy_ring_prevalance.data", "w") as fr_p_file:
+        with open("data/fairy_ring_prevalance.data", "w") as fr_p_file:
             fr_p_file.write(str([[float(j) for j in i] for i in heatmap_data]))
     else:
         # Else read from file
-        with open("fairy_ring_prevalance.data", "r") as fr_p_file:
+        with open("data/fairy_ring_prevalance.data", "r") as fr_p_file:
             heatmap_data = eval(fr_p_file.read())
     heatmap_data = [[100 * j for j in i] for i in heatmap_data]
     im = plt.imshow(heatmap_data, cmap="vanimo")

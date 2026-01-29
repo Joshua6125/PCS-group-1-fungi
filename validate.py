@@ -117,10 +117,13 @@ def main():
         plt.xlabel("Time")
         plt.ylabel("Residual Diameter")
     elif PLOT_TYPE == 1:
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         CA_val = scaler_slope*slope_CA*t + scaler_intercept*intercept_CA
         lower = slope_ci[0] * t + intercept_ci[0]
         upper = slope_ci[1] * t + intercept_ci[1]
+
+        plt.fill_between(t, lower, upper, alpha=0.3, label="residual 95% confidence band")
+        plt.plot(t, CA_val, linewidth=1, label="Residual scaled CA model")
 
         x1, x2, y1, y2 = 84, 87, 157, 162
         axins = ax.inset_axes(
@@ -128,11 +131,8 @@ def main():
             xlim=(x1, x2), ylim=(y1, y2), xticklabels=[], yticklabels=[])
         axins.plot(t, CA_val)
         axins.fill_between(t, lower, upper, alpha=0.3, label="residual 95% confidence band")
-
         ax.indicate_inset_zoom(axins, edgecolor="black")
 
-        plt.fill_between(t, lower, upper, alpha=0.3, label="residual 95% confidence band")
-        plt.plot(t, CA_val, linewidth=1, label="Residual scaled CA model")
         plt.xlabel("Time")
         plt.ylabel("Diameter")
     elif PLOT_TYPE == 2:

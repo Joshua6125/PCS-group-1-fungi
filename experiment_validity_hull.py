@@ -30,7 +30,7 @@ def main():
             futures = [executor.submit(run_single_simulation, rate, sim_parameters)
                        for _ in range(num_simulations)]
 
-            vals = [f.result() for f in futures]
+            vals = np.array([f.result() for f in futures])
 
             mean_val = np.mean(vals)
             std_val = np.std(vals)

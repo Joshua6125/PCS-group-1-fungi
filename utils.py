@@ -11,7 +11,7 @@ def gkern(l: int, sig: float) -> np.ndarray:
     creates 2d gaussian kernel with side length `l` and a sigma of `sig`
     """
     ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
-    gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
+    gauss = np.exp(-0.25 * np.square(ax) / np.square(sig))
     kernel = np.outer(gauss, gauss)
     return kernel / np.sum(kernel)
 
@@ -72,7 +72,7 @@ def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
     return next_target
 
 
-def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:
+def read_fairy_data(filename="data/fairy_ring_data.csv") -> np.ndarray:
     """
     Reads fairy ring data from saved csv and parses it.
 
