@@ -11,7 +11,7 @@ def gkern(l: int, sig: float) -> np.ndarray:
     creates 2d gaussian kernel with side length `l` and a sigma of `sig`
     """
     ax = np.linspace(-(l - 1) / 2., (l - 1) / 2., l)
-    gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
+    gauss = np.exp(-0.25 * np.square(ax) / np.square(sig))
     kernel = np.outer(gauss, gauss)
     return kernel / np.sum(kernel)
 
@@ -72,7 +72,7 @@ def apply_diffusion(source: dict, conv_size: int, conv_var: float) -> dict:
     return next_target
 
 
-def read_fairy_data(filename="fairy_ring_data.csv") -> np.ndarray:
+def read_fairy_data(filename="data/fairy_ring_data.csv") -> np.ndarray:
     """
     Reads fairy ring data from saved csv and parses it.
 
@@ -125,8 +125,7 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
     # Minimize the sum of squared residuals
     try:
         res = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(Y_val)
-    except Exception as E:
-        print(E)
+    except:
         return None, None
 
     slope = res[1]
@@ -135,12 +134,19 @@ def linear_regression(points: np.ndarray | None = None) -> tuple:
     return intercept, slope
 
 
-def regression_ci(points, confidence=0.95):
+def regression_ci(points, confidence=0.95) -> tuple:
+    '''
+    Calculates the confidence interval of a linear regression
+    of a set of points
+
+    :param points: set of points
+    :param confidence: confidence
+    '''
     x = points[:, 0]
     y = points[:, 1]
 
     n = len(x)
-    dof = n - 2 # degrees of freedom
+    dof = n - 2
 
     slope, intercept = np.polyfit(x, y, 1)
     y_fit = intercept + slope * x
@@ -165,6 +171,24 @@ def regression_ci(points, confidence=0.95):
     )
 
     return intercept_ci, slope_ci
+
+
+def bootstrap_slope_ci(points, n_boot=5000, confidence=0.95):
+    slopes = []
+    n = len(points)
+
+    for _ in range(n_boot):
+        sample = points[np.random.randint(0, n, n)]
+        _, slope = linear_regression(sample)
+        if slope is not None:
+            slopes.append(slope)
+
+    slopes = np.array(slopes)
+    alpha = (1 - confidence) / 2
+    return (
+        np.quantile(slopes, alpha),
+        np.quantile(slopes, 1 - alpha)
+    )
 
 
 class Point():
