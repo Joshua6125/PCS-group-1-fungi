@@ -13,7 +13,7 @@ This project simulates fungal growth and the formation of fairy rings using Cell
 - **`transitions.py`**: Implements simulation logic:
   - `BasicSim`: Simple lifecycle transitions.
   - `BasicToxinSim`, `ProbToxinSim`, `ProbToxinDeathSim`: toxin diffusion models with extra goodies
-- **`gui.py`**: A GUI to visualize and control the simulations. (main program)
+- **`gui.py`**: A GUI to visualize and control the simulations.
 - **`utils.py`**: Utility functions.
 - **`validate.py`**: Validates the model by comparing to real world data.
 - **`experiment_validity_hull.py`**: Runs batch simulations to analyze the "validity hull" metric across different toxin decay rates.
@@ -21,10 +21,19 @@ This project simulates fungal growth and the formation of fairy rings using Cell
 
 ## Usage
 
-To run the main simulation with the GUI:
-
+First install the uv python package manager (written in Rust!)
 ```bash
-uv run gui.py
+https://docs.astral.sh/uv/
+```
+
+Then install all the required packages
+```bash
+uv sync
+```
+
+To run the main simulation with the GUI:
+```bash
+uv run main.py
 ```
 
 To run specific experiments:
@@ -32,29 +41,6 @@ To run specific experiments:
 uv run experiment_validity_hull.py
 # or
 uv run experiment_varying_kernel.py
-```
-
-## Managing Packages (uv)
-
-### Add a new library
-To add a library (e.g., scipy):
-```bash
-uv add scipy
-```
-
-### Remove a library
-```bash
-uv remove numpy
-```
-
-### Update all packages
-```bash
-uv sync --upgrade
-```
-
-### Activate venv
-```bash
-source .venv/bin/activate
 ```
 
 ## References
